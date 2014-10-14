@@ -15,7 +15,6 @@ npm install
 ./node_modules/.bin/grunt
 ```
 
-<<<<<<< HEAD
 ## custom builds
 np-help is based around a main directive which generate a top level controller whose API can be accessed by sub directives
 (plugins), if you don't need some of these, simply edit the Gruntfile (the pluginList variable) and run `grunt`
@@ -31,14 +30,7 @@ We use Karma to ensure the quality of the code. The karma task will try to open 
 
 nextprot Help module is under GPL license:
 
-> Copyright (C) 2014 CALIPHO ndu@isb-sib.ch.
-=======
-## License
-
-nextprot help module is under GPL license:
-
 > Copyright (C) 2014 ndu@isb-sib.ch.
->>>>>>> ab189fabfccbd0d6de93864c4eea6d723150a0ed
 >
 > Permission is hereby granted, free of charge, to any person
 > obtaining a copy of this software and associated documentation files
