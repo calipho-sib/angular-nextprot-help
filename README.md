@@ -12,7 +12,7 @@ The easiest way to run the development is to use grunt and open your browser at 
 ```
 npm install
 ./node_modules/.bin/bower install 
-./node_modules/.bin/grunt
+./node_modules/.bin/grunt serve
 ```
 
 ## custom builds
