@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="main">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+
+
+    <base href="../"/>
+    <title>npHelp</title>
+
+    <!-- Le css -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="src/np-help.css"/>
+    <link rel="stylesheet" type="text/css" href="demo/demo.css"/>
+
+    <script>
+      var BASE_SERVER="http://crick:8080"
+    </script>
+
+    <script type="application/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="application/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+    <script type="application/javascript" src="dist/np-help.js"></script>
+    <script type="application/javascript" src="demo/demo.js"></script>
+
+
+
+  </head>
+  <body>
+
+    <div >
+      <div class="jumbotron text-center" style="overflow: hidden;">
+        <h1>Demo nextprot Help </h1>
+      </div>
+      <div ng-controller="HelpCtrl" class="container">
+        <h5>Embedded help</h5>
+        <div rdf-help></div>
+      </div>
+
+
+    </div>
+  </body>
+</html>

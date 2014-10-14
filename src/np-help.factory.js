@@ -1,23 +1,25 @@
 (function (ng, undefined) {
     'use strict';
-    ng.module('np-help')
-        .controller('ng.help.factory', ['$scope', '$parse', '$filter', '$attrs', 
-        function($scope, $parse, $filter, $attrs) {
-            var baseUrl=""
-            var $rdf_help_get_resource = $resource(baseUrl + '/nextprot-api/rdf/help/type/all.json');
-
+    ng.module('npHelp')
+        .factory('rdfHelp', ['$resource','settings',
+        function($resource, settings) {
+            var $dao={
+                rdfHelp:$resource(settings.baseUrl + '/nextprot-api/rdf/help/type/all.json')   
+            }
             
-            $rdf_help_get_resource.query(null, function (data) {
-                service.rdfHelp = data;
-            });
 
-        }])
-        .directive('stTable', function () {
-            return {
-                restrict: 'A',
-                controller: 'stTableController',
-                link: function (scope, element, attr, ctrl) {
-                }
-            };
-        });
+            var Help=function(){
+                this.rdfHelp={}
+            }
+
+            Help.prototype.query=function(){
+                return $dao.rdfHelp.query(null, function (data) {
+                    angular.extend(this,data);
+                }); 
+            }
+ 
+            return new Help()
+        }
+
+    ]);
 })(angular);

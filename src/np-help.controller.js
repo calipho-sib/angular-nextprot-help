@@ -1,15 +1,8 @@
-(function (ng, undefined) {
-    'use strict';
-    ng.module('np-help')
-        .controller('stTableController', ['$scope', '$parse', '$filter', '$attrs', function StTableController($scope, $parse, $filter, $attrs) {
+(function (ng, undefined) {'use strict';
 
-        }])
-        .directive('stTable', function () {
-            return {
-                restrict: 'A',
-                controller: 'stTableController',
-                link: function (scope, element, attr, ctrl) {
-                }
-            };
-        });
+    ng.module('npHelp').controller('HelpCtrl', ['$scope', 'rdfHelp',
+        function ($scope, rdfHelp) {
+            $scope.rdfHelp=rdfHelp.query()
+        }
+    ]);
 })(angular);
