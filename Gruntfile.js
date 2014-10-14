@@ -67,6 +67,13 @@ module.exports = function (grunt) {
             }
         },
         watch: {
+            css:{
+                files: 'src/*.css',
+                tasks: ['copy','cssmin'],
+                options: {
+                    livereload: true
+                }                
+            },
             js: {
                 files: 'src/*.js',
                 tasks: ['concat'],
