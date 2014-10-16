@@ -27,11 +27,13 @@ echo "deploying application on github/$BASE_DIR"
 }
 
 # build current version of the aplication
+./node_modules/.bin/bower install
 BASE=$BASE_DIR ./node_modules/.bin/grunt 
+
 
 # switch branch to gh-pages
 git checkout gh-pages
-[ -f index.html ] ||{
+[ -f demo/index.html ] ||{
 	echo "issue on checkout branch gh-pages"
 	exit 1
 }
@@ -40,10 +42,9 @@ git checkout gh-pages
 git pull $GH_DEST gh-pages
 git fetch --all
 git reset --hard $GH_DEST/gh-pages
+git checkout master demo dist bower_components
 
 # remove everything and copy the new version
-rm -rf css fonts js partials && cp -a build/* .
-git add --all
 git commit -m "deploy a new version" .
 
 echo "READY to deploy in github gh-pages"
