@@ -16,7 +16,7 @@ control_c(){
 
 echo "deploying application on github/$BASE_DIR"
 
-[ -f app.js ] || {
+[ -f Gruntfile.js ] || {
   echo "run $0 from root directory"
   exit 1
 } 
