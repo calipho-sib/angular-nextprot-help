@@ -2,7 +2,7 @@ var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
 
-var jsList = ['src/np-help.module.js','src/np-help.controller.js', 'src/np-help.factory.js', 'src/np-help.directive.js'];
+var jsList = ['src/js/np-help.module.js','src/js/np-help.controller.js', 'src/js/np-help.factory.js', 'src/js/np-help.directive.js'];
 
 
 module.exports = function (grunt) {
@@ -27,16 +27,15 @@ module.exports = function (grunt) {
     grunt.initConfig({
         cmpnt: grunt.file.readJSON('bower.json'),
         clean: {
-
             working: {
-                src: ['np-help.*', './.temp/views', './.temp/']
+                src: ['dist/np-help.*', './.temp/views', './.temp/']
             }
         },
         copy: {
             styles: {
                 files: [
                     {
-                        src: './src/np-help.css',
+                        src: './src/css/np-help.css',
                         dest: './dist/np-help.css'
                     }
                 ]
@@ -68,21 +67,21 @@ module.exports = function (grunt) {
         },
         watch: {
             css:{
-                files: 'src/*.css',
+                files: 'src/css/*.css',
                 tasks: ['copy','cssmin'],
                 options: {
                     livereload: true
                 }                
             },
             js: {
-                files: 'src/*.js',
+                files: 'src/js/*.js',
                 tasks: ['concat'],
                 options: {
                     livereload: true
                 }
             },
             html: {
-                files: 'src/*.html',
+                files: 'src/html/*.html',
                 tasks: ['ngTemplateCache', 'concat'],
                 options: {
                     livereload: true
@@ -107,7 +106,7 @@ module.exports = function (grunt) {
         ngTemplateCache: {
             views: {
                 files: {
-                    './.temp/scripts/views.js': 'src/*.html'
+                    './.temp/scripts/views.js': 'src/html/*.html'
                 },
                 options: {
                     trim: 'src/',

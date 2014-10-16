@@ -3,18 +3,19 @@
     ng.module('npHelp')
         .factory('rdfHelp', ['$resource','settings',
         function($resource, settings) {
+            console.log(settings,(settings.baseUrl||'') + settings.helpUrl)
             var $dao={
-                rdfHelp:$resource(settings.baseUrl + '/nextprot-api/rdf/help/type/all.json')   
+                rdfHelp:$resource((settings.baseUrl||'') + settings.helpUrl)   
             }
             
 
             var Help=function(){
-                this.rdfHelp={}
             }
 
             Help.prototype.query=function(){
+                var self=this;
                 return $dao.rdfHelp.query(null, function (data) {
-                    angular.extend(this,data);
+                    angular.extend(self,data);
                 }); 
             }
  
