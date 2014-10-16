@@ -22,7 +22,7 @@ echo "deploying application on github/$BASE_DIR"
 } 
 
 [ -f node_modules/.bin/grunt ] || {
- echo "brunch is not there, did you ran npm install"
+ echo "grunt is not there, did you ran npm install"
  exit 1
 }
 
