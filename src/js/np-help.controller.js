@@ -12,7 +12,7 @@
                 $scope.mdFile=$location.path().substring(1)
                 if($scope.mdFile=='')$scope.mdFile=settings.home;
                 $scope.mdFile+='.md'
-
+                console.log("md",$scope.mdFile)
                 if(next&&next.params&&next.params.entity){
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;

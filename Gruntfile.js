@@ -15,17 +15,40 @@ module.exports = function (grunt) {
         'clean',
         'ngTemplateCache',
         'concat',
+        'bower_concat',
         'copy'
     ]);
 
     grunt.registerTask('default', [
+        'bower:install',
+        'bower_concat',
         'dev',
         'uglify',
         'cssmin'
     ]);
 
+    // http://fuseinteractive.ca/blog/automating-bower-library-integration-grunt
     grunt.initConfig({
         cmpnt: grunt.file.readJSON('bower.json'),
+        bower: {
+            options:{
+                targetDir:'./lib'
+            },
+            install: {
+               //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
+            }
+        },
+        bower_concat: {
+          all: {
+            dest: 'demo/depends.js',
+            mainFiles:{
+                'showdown':['src/showdown.js']
+            },
+            dependencies:{
+                'angular':['jquery','bootstrap','showdown']
+            }
+          }
+        },        
         clean: {
             working: {
                 src: ['dist/np-help.*', './.temp/views', './.temp/']
@@ -37,6 +60,10 @@ module.exports = function (grunt) {
                     {
                         src: './src/css/np-help.css',
                         dest: './dist/np-help.css'
+                    },
+                    {
+                        src: './lib/bootstrap/bootstrap.css',
+                        dest:'./demo/bootstrap.css'
                     }
                 ]
             }
