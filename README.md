@@ -2,12 +2,16 @@
 
 Nextprot help is a help module for angular js. It allows you to quickly embed the nexprot help in a declarative way including RDF and API.
 
-## Install
+## Install it as angular module
 
-the easiest way is to run `bower install angular-nextprot-help`, then you just have to add the script and register the module `np-help` to you application
+the easiest way is to run bower, then you just have to add the script and register the module `np-help` to you application:
+
+```
+./node_modules/.bin/bower install --save https://github.com/calipho-sib/nextprot-ui-help/tarball/master
+```
 
 ## Development
-The easiest way to run the development is to use grunt and open your browser at http://localhost:8000:
+The easiest way to run the development is to use grunt and open your browser at [http://localhost:8000](http://localhost:8000):
 
 ```
 npm install
