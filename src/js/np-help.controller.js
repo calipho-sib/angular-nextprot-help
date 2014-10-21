@@ -4,10 +4,15 @@
         function ($scope, $location, rdfHelp, settings, $routeParams) {
             
             $scope.settings=settings;
+            $scope.mdFile=false;
 
             //
             // update entity documentation 
             $scope.$on('$routeChangeStart', function(event, next, current) { 
+                $scope.mdFile=$location.path().substring(1)
+                if($scope.mdFile=='')$scope.mdFile=settings.home;
+                $scope.mdFile+='.md'
+
                 if(next&&next.params&&next.params.entity){
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;
@@ -26,14 +31,8 @@
                 return $scope.entityName===name
             }  
 
+            // load on initial 
             $scope.rdfHelp=rdfHelp.query()
-
-
-            if($location.path()!=='/'){
-                $scope.rdfHelp.$promise.then(function(){
-                    $scope.entity=$scope.getActiveElement($location.path().substring(1))
-                })                
-            }
         }
     ]);
 })(angular);
