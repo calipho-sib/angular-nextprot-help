@@ -1,12 +1,12 @@
 {
   "name": "angular-nextprot-help",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "https://github.com/calipho-sib/nextprot-ui-help",
   "authors": [
     "calipho <ndu@isb-sib.ch>"
   ],
   "description": "help module for nextprot",
-  "main": "dist/np-help.min.js",
+  "main": "dist/np-help.js",
   "keywords": [
     "help",
     "angular"
