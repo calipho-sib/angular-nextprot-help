@@ -43,7 +43,7 @@
             }
 
             $scope.isActiveElement=function(name){
-                return $scope.entityName===name
+                return $scope.entityName===name||$scope.mdFile===name+'.md';
             }  
 
             // load on init 
