@@ -19,8 +19,12 @@ npm install
 ./node_modules/.bin/grunt serve
 ```
 
-## updates
-When code is modified, the bower version must be changed in the bower.json file. Then on the parent module just type: `bower update`. 
+## Updates
+When code is modified
+* The bower version must be changed in the bower.json file. 
+* The distribution files must be generated using: `./node_modules/.bin/grunt` 
+* Commit and push your changes to git
+* On the host module type: `bower update`. 
 
 ## custom builds
 np-help is based around a main directive which generate a top level controller whose API can be accessed by sub directives
