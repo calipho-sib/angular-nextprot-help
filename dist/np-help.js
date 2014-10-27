@@ -86,7 +86,8 @@
             };
         }])
 
-        .directive("markdown", function ($compile, $http, $parse, $timeout) {
+        .directive("markdown", ['$compile', '$http', '$parse', '$timeout', 
+          function ($compile, $http, $parse, $timeout) {
             var converter = new Showdown.converter();
             return {
                 restrict: 'E',
@@ -119,7 +120,7 @@
 
                 }
             };
-        })
+        }])
 
         .filter('trusted', ['$sce', function ($sce) {
             return function(url) {
