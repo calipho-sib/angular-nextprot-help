@@ -9,9 +9,8 @@
 })(angular);
 
 (function (ng, undefined) {'use strict';
-
-    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$routeParams', 
-        function ($scope, $location, rdfHelp, settings, $routeParams) {
+    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$route','$log', 
+        function ($scope, $location, rdfHelp, settings, $route, $log) {
             function parseMdFile(){
                 var page=$location.path().substring(1)
                 if(page===settings.root){
@@ -23,9 +22,11 @@
                     }
                 }
             }
-
+            $scope.entityName=$route.current.params.entity;
+            $scope.entity={}
             $scope.settings=settings;
             $scope.mdFile=parseMdFile();
+            $scope.rdfHelp=rdfHelp;
 
 
             //
@@ -36,8 +37,9 @@
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;
                 }
-                console.log("mdFile",$scope.mdFile)
-                console.log("entityName",$scope.entityName)
+                $log.info("mdFile",$scope.mdFile)
+                $log.info("entityName",$scope.entityName)
+                $log.info("entity",$scope.entity)
             });  
 
             $scope.getActiveElement=function(entity){
@@ -52,36 +54,49 @@
                 return $scope.entityName===name
             }  
 
-            // load on initial 
-            $scope.rdfHelp=rdfHelp.query()
+            // load on init 
+            rdfHelp.query().$promise.then(function(help){
+                $scope.entity=$scope.getActiveElement($scope.entityName)
+            })
         }
     ]);
 })(angular);
 
-(function (ng, undefined) {
-    'use strict';
+(function (ng, undefined) { 'use strict';
     ng.module('npHelp')
-        .factory('rdfHelp', ['$resource','settings',
-        function($resource, settings) {
-            console.log(settings,(settings.baseUrl||'') + settings.helpUrl)
-            var $dao={
-                rdfHelp:$resource((settings.baseUrl||'') + settings.helpUrl)   
-            }
+        .factory('rdfHelp', ['$resource','$q','settings',
+        function($resource, $q, settings) {
             
 
             var Help=function(){
+                this.$dao={
+                    rdfHelp:$resource((settings.baseUrl||'') + settings.helpUrl)   
+                }
+
+                this.ready=false;
+
+                //
+                // wrap promise to this object
+                this.$promise=$q.when(this)
             }
 
             Help.prototype.query=function(){
                 var self=this;
-                return $dao.rdfHelp.query(null, function (data) {
-                    angular.extend(self,data);
-                }); 
+
+                // is emtpy
+                if(!this.ready){                
+                    this.$promise=self.$dao.rdfHelp.query().$promise;
+    
+                    this.$promise.then(function (data) {
+                        angular.extend(self,data);
+                        self.ready=true;
+                    }); 
+                }
+                return this;
             }
  
             return new Help()
         }
-
     ]); 
 })(angular);
 

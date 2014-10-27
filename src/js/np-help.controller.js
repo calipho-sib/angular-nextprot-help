@@ -1,7 +1,6 @@
 (function (ng, undefined) {'use strict';
-
-    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$routeParams', 
-        function ($scope, $location, rdfHelp, settings, $routeParams) {
+    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$route','$log', 
+        function ($scope, $location, rdfHelp, settings, $route, $log) {
             function parseMdFile(){
                 var page=$location.path().substring(1)
                 if(page===settings.root){
@@ -13,9 +12,11 @@
                     }
                 }
             }
-
+            $scope.entityName=$route.current.params.entity;
+            $scope.entity={}
             $scope.settings=settings;
             $scope.mdFile=parseMdFile();
+            $scope.rdfHelp=rdfHelp;
 
 
             //
@@ -26,8 +27,9 @@
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;
                 }
-                console.log("mdFile",$scope.mdFile)
-                console.log("entityName",$scope.entityName)
+                $log.info("mdFile",$scope.mdFile)
+                $log.info("entityName",$scope.entityName)
+                $log.info("entity",$scope.entity)
             });  
 
             $scope.getActiveElement=function(entity){
@@ -42,8 +44,10 @@
                 return $scope.entityName===name
             }  
 
-            // load on initial 
-            $scope.rdfHelp=rdfHelp.query()
+            // load on init 
+            rdfHelp.query().$promise.then(function(help){
+                $scope.entity=$scope.getActiveElement($scope.entityName)
+            })
         }
     ]);
 })(angular);
