@@ -5,8 +5,7 @@
             return {
                 restrict: 'A',
                 transclude: true,
-                replace: true,
-                templateUrl: 'np-help.element.html',
+                templateUrl: 'html/np-help.element.html',
                 link: function (scope, element, attr, ctrl) {
                 }
             };
