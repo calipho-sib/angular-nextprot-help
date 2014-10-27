@@ -1,16 +1,17 @@
-(function (ng) {
-    'use strict';
-    ng.module('npHelp',['ngRoute']).constant('settings', {
-    	baseUrl:window.BASE_SERVER,
-    	helpUrl:window.HELP_URL||'/nextprot-api/rdf/help/type/all.json',
-    	root:window.ROOT||'doc',
-        pages:window.PAGES
-    });  
+(function (ng) {'use strict';
+    var defaultSettings={
+        helpUrl:'/nextprot-api/rdf/help/type/all.json',
+        root:'',
+        pages:['faq','home','entity/']
+    }
+    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings));  
 })(angular);
 
 (function (ng, undefined) {'use strict';
     ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$route','$log', 
         function ($scope, $location, rdfHelp, settings, $route, $log) {
+            //
+            // simple helper to get markdown file from url
             function parseMdFile(){
                 var page=$location.path().substring(1)
                 if(page===settings.root){
@@ -22,7 +23,7 @@
                     }
                 }
             }
-            $scope.entityName=$route.current.params.entity;
+            $scope.entityName=$route.current&&$route.current.params.entity||'';
             $scope.entity={}
             $scope.settings=settings;
             $scope.mdFile=parseMdFile();

@@ -1,9 +1,8 @@
-(function (ng) {
-    'use strict';
-    ng.module('npHelp',['ngRoute']).constant('settings', {
-    	baseUrl:window.BASE_SERVER,
-    	helpUrl:window.HELP_URL||'/nextprot-api/rdf/help/type/all.json',
-    	root:window.ROOT||'doc',
-        pages:window.PAGES
-    });  
+(function (ng) {'use strict';
+    var defaultSettings={
+        helpUrl:'/nextprot-api/rdf/help/type/all.json',
+        root:'',
+        pages:['faq','home','entity/']
+    }
+    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings));  
 })(angular);

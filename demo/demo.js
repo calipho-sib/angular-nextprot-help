@@ -13,7 +13,7 @@
 		$routeProvider
 			.when('/', { templateUrl: "html/np-help.md.html" })
 			.when('/faq', { templateUrl: "html/np-help.md.html" })
-			.when('/doc/:entity', { templateUrl: "html/np-help.element.html"})
+			.when('/entity/:entity', { templateUrl: "html/np-help.element.html"})
 			.otherwise({ redirectTo: '/' });
 		
 	});  	
