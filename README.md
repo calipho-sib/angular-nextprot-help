@@ -11,7 +11,7 @@ the easiest way is to run bower, then you just have to add the script and regist
 ```
 
 ## Development
-The easiest way to run the development is to use grunt and open your browser at [http://localhost:8000](http://localhost:8000):
+The easiest way to run the development is to use grunt and open your browser at [http://localhost:3000/demo](http://localhost:3000/demo):
 
 ```
 npm install
