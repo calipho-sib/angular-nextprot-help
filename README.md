@@ -11,13 +11,20 @@ the easiest way is to run bower, then you just have to add the script and regist
 ```
 
 ## Development
-The easiest way to run the development is to use grunt and open your browser at [http://localhost:8000](http://localhost:8000):
+The easiest way to run the development is to use grunt and open your browser at [http://localhost:3000/demo](http://localhost:3000/demo):
 
 ```
 npm install
 ./node_modules/.bin/bower install 
 ./node_modules/.bin/grunt serve
 ```
+
+## Updates
+When code is modified
+* The bower version must be changed in the bower.json file. 
+* The distribution files must be generated using: `./node_modules/.bin/grunt` 
+* Commit and push your changes to git
+* On the host module type: `bower update`. 
 
 ## custom builds
 np-help is based around a main directive which generate a top level controller whose API can be accessed by sub directives

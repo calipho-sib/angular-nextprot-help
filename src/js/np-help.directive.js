@@ -5,29 +5,47 @@
             return {
                 restrict: 'A',
                 transclude: true,
-                replace: true,
-                templateUrl: 'np-help.template.html',
+                templateUrl: 'html/np-help.element.html',
                 link: function (scope, element, attr, ctrl) {
                 }
             };
         }])
 
-        .directive("markdown", function ($compile, $http) {
+        .directive("markdown", ['$compile', '$http', '$parse', '$timeout', 
+          function ($compile, $http, $parse, $timeout) {
             var converter = new Showdown.converter();
             return {
                 restrict: 'E',
+                scope:{
+                    mdSrc:'@'
+                },
                 replace: true,
                 link: function (scope, element, attrs) {
-                    if ("src" in attrs) {
-                        $http.get(attrs.src).then(function(data) {
-                            element.html(converter.makeHtml(data.data));
+                    var opts=$parse(attrs.markdownOpts||{})
+                    var initSrc=attrs.mdSrc;
+                    if (initSrc) {
+                        attrs.$observe('mdSrc', function(mdSrc,a){
+                            // if(mdSrc==initSrc){
+                            //     return;
+                            // }
+
+                            $http.get(attrs.mdSrc).then(function(data) {
+                                element.html(converter.makeHtml(data.data));
+                            },function(data){
+                                if(opts.silent){
+                                    return element.hide();
+                                }
+                                element.html(data)
+                            });
+
                         });
                     } else {
                         element.html(converter.makeHtml(element.text()));
                     }
+
                 }
             };
-        })
+        }])
 
         .filter('trusted', ['$sce', function ($sce) {
             return function(url) {
@@ -36,9 +54,13 @@
         }])
 
         .filter('cleanType', ['$sce', function ($sce) {
-            return function(type) {
-                if(!type)return type;
-                return type.substring(1);
+            return function(type,tolower) {
+                if(!type|| typeof type==='object')
+                    return type;
+                type=type.replace(':','');
+                if(tolower)
+                    type=type.toLowerCase()
+                return type;
             };
         }]);        
 

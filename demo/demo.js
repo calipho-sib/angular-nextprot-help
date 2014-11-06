@@ -11,8 +11,9 @@
 		$locationProvider.hashPrefix('!');
 
 		$routeProvider
-			.when('/', { templateUrl: "html/np-help.intro.html" })
-			.when('/:entity', { templateUrl: "html/np-help.element.html"})
+			.when('/', { templateUrl: "html/np-help.md.html" })
+			.when('/faq', { templateUrl: "html/np-help.md.html" })
+			.when('/entity/:entity', { templateUrl: "html/np-help.element.html"})
 			.otherwise({ redirectTo: '/' });
 		
 	});  	

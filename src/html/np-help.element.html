@@ -2,7 +2,7 @@
     <div class="row">
         <section id="{{entity.typeName}}">
 
-            <h2> {{entity.typeName.replace(':','')}}
+            <h2> {{entity.typeName|cleanType}}
                 <!-- Possible values -->
                 <div ng-if="entity.values.length > 0" class="btn-group">
                     <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span>
@@ -15,14 +15,20 @@
                 <!--<button type="button" ng-click="openPopup('visgraph', entity.typeName)"><i class="icon-retweet"></i></a></button>-->
             </h2>
 
+            <blockquote>
+                {{entity.rdfsComment}}
+            </blockquote> 
+
+<!--             
+            <markdown md-src="docs/{{entity.typeName|cleanType:true}}.md" markdown-opts="{silent:true}" />
+ -->
 
             <div class="row">
-            <blockquote>{{entity.rdfsComment}}</blockquote> 
                 <!-- Reverse Triplets (parents) -->
-                <div class="col-xs-12 col-md-5 vertical-middle text-center">
+                <div class="col-xs-12 col-md-5 vertical-middle ">
                     <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate">
                         <p><code><a href="#!/{{parent.subjectType|cleanType}}" class="text-info">{{parent.subjectType}}</a></code>
-                            &nbsp;<span class="next-arrow">&gt;</span> <code class="text-warning">{{parent.predicate}}</code><span class="next-arrow">&gt;</span>
+                            &nbsp; <code class="text-warning">{{parent.predicate}}</code></span>
                         </p>
                     </div>
                 </div>
@@ -56,8 +62,7 @@
             </div>
             <div class="bs-docs-example">
                 <div ng-repeat="path in entity.pathToOrigin">
-                    <code class="text-info">{{path}} ?statetment.<br/>
-                    &nbsp;&nbsp;?statement a {{entity.typeName}}</code>
+                    <code class="text-info">{{path}} ?statement</code>
                 </div>
             </div>
         </section>

@@ -1,12 +1,12 @@
 {
   "name": "angular-nextprot-help",
-  "version": "0.1.0",
+  "version": "0.7.2",
   "homepage": "https://github.com/calipho-sib/nextprot-ui-help",
   "authors": [
     "calipho <ndu@isb-sib.ch>"
   ],
   "description": "help module for nextprot",
-  "main": "dist/np-help.min.js",
+  "main": ["dist/np-help.js","dist/np-help.css"],
   "keywords": [
     "help",
     "angular"
@@ -20,6 +20,11 @@
     "src",
     "tests"
   ],
+  "overrides": {
+    "showdown": {
+      "main": "src/showdown.js"
+    }
+  },
   "dependencies": {
     "angular": "~1",
     "angular-route": "~1",

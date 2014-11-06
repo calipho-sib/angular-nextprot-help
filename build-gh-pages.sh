@@ -27,7 +27,6 @@ echo "deploying application on github/$BASE_DIR"
 }
 
 # build current version of the aplication
-./node_modules/.bin/bower install
 BASE=$BASE_DIR ./node_modules/.bin/grunt 
 
 
@@ -42,7 +41,7 @@ git checkout gh-pages
 git pull $GH_DEST gh-pages
 git fetch --all
 git reset --hard $GH_DEST/gh-pages
-git checkout master demo dist bower_components
+git checkout master demo dist
 
 # remove everything and copy the new version
 git commit -m "deploy a new version" .
