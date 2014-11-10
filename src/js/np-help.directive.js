@@ -1,5 +1,4 @@
-(function (ng, undefined) {
-    'use strict';
+(function (ng, undefined) {'use strict';
     ng.module('npHelp')
         .directive('rdfHelp', [function () {
             return {

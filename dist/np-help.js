@@ -8,12 +8,15 @@
 })(angular);
 
 (function (ng, undefined) {'use strict';
-    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$route','$log', 
+    ng.module('npHelp').controller('HelpCtrl', 
+        ['$scope','$location','rdfHelp','settings','$route','$log', 
         function ($scope, $location, rdfHelp, settings, $route, $log) {
             //
             // simple helper to get markdown file from url
             function parseMdFile(){
-                var page=$location.path().substring(1)
+                if(!$location ||!$location.path())return;
+                var page=($location.path().length>1)?$location.path().substring(1):settings.root
+                console.log(page,$location.path())
                 if(page===settings.root){
                     return settings.pages[0]+'.md'
                 }
@@ -28,12 +31,17 @@
             $scope.settings=settings;
             $scope.mdFile=parseMdFile();
             $scope.rdfHelp=rdfHelp;
+            $scope.pushState=$location.$$html5
+
 
 
             //
             // update entity documentation 
             $scope.$on('$routeChangeStart', function(event, next, current) { 
+
                 $scope.mdFile=parseMdFile()
+                $scope.entity=={}
+                $scope.entityName=undefined
                 if(next&&next.params&&next.params.entity){
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;
@@ -52,8 +60,17 @@
             }
 
             $scope.isActiveElement=function(name){
-                return $scope.entityName===name||$scope.mdFile===name+'.md';
+                name=name||''
+                name=name.replace(':','');
+                var active=($scope.entityName===name||$scope.mdFile===name+'.md')
+                if(active)console.log('isactive',$scope.entityName,name)
+                return active;
             }  
+
+            $scope.hrefBuild=function(uri){
+                uri=uri.replace(':','');
+                return (settings.root&&settings.root.length)?(settings.root+'/'+uri):uri
+            }
 
             // load on init 
             rdfHelp.query().$promise.then(function(help){
@@ -101,8 +118,7 @@
     ]); 
 })(angular);
 
-(function (ng, undefined) {
-    'use strict';
+(function (ng, undefined) {'use strict';
     ng.module('npHelp')
         .directive('rdfHelp', [function () {
             return {
@@ -171,6 +187,6 @@
 })(angular);
 
 angular.module('npHelp').run(['$templateCache', function ($templateCache) {
-	$templateCache.put('html/np-help.element.html', '<div class="row offset1"> <div class="row"> <section id="{{entity.typeName}}"> <h2> {{entity.typeName|cleanType}}  <div ng-if="entity.values.length> 0" class="btn-group"> <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span> </button> <ul class="dropdown-menu"> <li ng-repeat="value in entity.values"><a href="">{{value}}</a></li> </ul> </div> <span class="badge badge-info">{{entity.instanceCount}}</span> </h2> <blockquote> {{entity.rdfsComment}} </blockquote> <div class="row"> <div class="col-xs-12 col-md-5 vertical-middle "> <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate"> <p><code><a href="#!/{{parent.subjectType|cleanType}}" class="text-info">{{parent.subjectType}}</a></code> &nbsp; <code class="text-warning">{{parent.predicate}}</code></span> </p> </div> </div> <div class="col-xs-12 col-md-7 form-inline"> <div class="panel panel-default"> <div class="panel-heading"><h5 class="text-center">{{entity.typeName}}</h5></div> <div class="panel-body"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-warning">{{t.predicate}}</code> <code><a class="text-success" href="#!/{{t.objectType|cleanType}}">{{t.objectType}}</a></code> &nbsp; <span class="label label-info">{{t.tripleCount}}</span> <select ng-if="t.literalType && t.values.length> 1" class="form-control"> <option ng-repeat="value in t.values" value="{{value}}">{{value}}</option> </select> <input ng-if="t.literalType && t.values.length==1" type="text" placeholder="{{t.values[0]}}" class="form-control"></input> </div> </div> </div> </div> </div> <div class="bs-docs-example"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-info">{{t.tripleSample}}</code> </div> </div> <div class="bs-docs-example"> <div ng-repeat="path in entity.pathToOrigin"> <code class="text-info">{{path}} ?statement</code> </div> </div> </section> </div> </div>');
+	$templateCache.put('html/np-help.element.html', '<div class="row offset1"> <div class="row"> <section id="{{entity.typeName}}"> <h2> {{entity.typeName|cleanType}}  <div ng-if="entity.values.length> 0" class="btn-group"> <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span> </button> <ul class="dropdown-menu"> <li ng-repeat="value in entity.values"><a href="">{{value}}</a></li> </ul> </div> <span class="badge badge-info">{{entity.instanceCount}}</span> </h2> <blockquote> {{entity.rdfsComment}} </blockquote> <div class="row"> <div class="col-xs-12 col-md-5 vertical-middle "> <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate"> <p><code><a ng-href="{{hrefBuild(\'entity/\'+parent.subjectType)}}" class="text-info">{{parent.subjectType}}</a></code> &nbsp; <code class="text-warning">{{parent.predicate}}</code></span> </p> </div> </div> <div class="col-xs-12 col-md-7 form-inline"> <div class="panel panel-default"> <div class="panel-heading"><h5 class="text-center">{{entity.typeName}}</h5></div> <div class="panel-body"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-warning">{{t.predicate}}</code> <code><a class="text-success" ng-href="{{hrefBuild(\'entity/\'+t.objectType)}}">{{t.objectType}}</a></code> &nbsp; <span class="label label-info">{{t.tripleCount}}</span> <select ng-if="t.literalType && t.values.length> 1" class="form-control"> <option ng-repeat="value in t.values" value="{{value}}">{{value}}</option> </select> <input ng-if="t.literalType && t.values.length==1" type="text" placeholder="{{t.values[0]}}" class="form-control"></input> </div> </div> </div> </div> </div> <div class="bs-docs-example"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-info">{{t.tripleSample}}</code> </div> </div> <div class="bs-docs-example"> <div ng-repeat="path in entity.pathToOrigin"> <code class="text-info">{{path}} ?statement</code> </div> </div> </section> </div> </div>');
 	$templateCache.put('html/np-help.md.html', '<markdown md-src="{{mdFile}}"></markdown>');
 }]);

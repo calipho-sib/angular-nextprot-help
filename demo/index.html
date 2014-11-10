@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="neXtProt Help">
     <meta name="fragment" content="!" >
-    <base href="./"/>
+    <base href="/demo/" >
 
     <title>npHelp</title>
 
@@ -64,12 +64,12 @@
       <!-- LEFT PANE -->
         <div class="col-sm-4 col-lg-3 sidebar">
           <ul class="nav nav-sidebar">
-            <li ng-class="{'active':isActiveElement('')}"><a href="#!/">Home</a></li>
-            <li ng-class="{'active':isActiveElement('faq')}"><a href="#!/faq">FAQ</a></li>
+            <li ng-class="{'active':isActiveElement('home')}"><a ng-href="/demo">Home</a></li>
+            <li ng-class="{'active':isActiveElement('faq')}"><a ng-href="faq">FAQ</a></li>
           </ul>
           <ul class="nav nav-sidebar">
-            <li ng-repeat="rh in rdfHelp | filter : rdfHelp.triples.predicate" ng-class="{'active':isActiveElement(rh.typeName.replace(':',''))}")>
-              <a ng-href="#!/entity/{{rh.typeName|cleanType}}">
+            <li ng-repeat="rh in rdfHelp | filter : rdfHelp.triples.predicate" ng-class="{'active':isActiveElement(rh.typeName)}")>
+              <a ng-href="entity/{{rh.typeName|cleanType}}">
                 <i class="icon-chevron-right"></i>{{rh.typeName|cleanType}}
                 ({{rh.instanceCount}})
               </a>

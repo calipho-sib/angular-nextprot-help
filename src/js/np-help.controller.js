@@ -1,10 +1,13 @@
 (function (ng, undefined) {'use strict';
-    ng.module('npHelp').controller('HelpCtrl', ['$scope', '$location','rdfHelp','settings','$route','$log', 
+    ng.module('npHelp').controller('HelpCtrl', 
+        ['$scope','$location','rdfHelp','settings','$route','$log', 
         function ($scope, $location, rdfHelp, settings, $route, $log) {
             //
             // simple helper to get markdown file from url
             function parseMdFile(){
-                var page=$location.path().substring(1)
+                if(!$location ||!$location.path())return;
+                var page=($location.path().length>1)?$location.path().substring(1):settings.root
+                console.log(page,$location.path())
                 if(page===settings.root){
                     return settings.pages[0]+'.md'
                 }
@@ -19,12 +22,17 @@
             $scope.settings=settings;
             $scope.mdFile=parseMdFile();
             $scope.rdfHelp=rdfHelp;
+            $scope.pushState=$location.$$html5
+
 
 
             //
             // update entity documentation 
             $scope.$on('$routeChangeStart', function(event, next, current) { 
+
                 $scope.mdFile=parseMdFile()
+                $scope.entity=={}
+                $scope.entityName=undefined
                 if(next&&next.params&&next.params.entity){
                     $scope.entity=$scope.getActiveElement(next.params.entity)
                     $scope.entityName=next.params.entity;
@@ -43,8 +51,17 @@
             }
 
             $scope.isActiveElement=function(name){
-                return $scope.entityName===name||$scope.mdFile===name+'.md';
+                name=name||''
+                name=name.replace(':','');
+                var active=($scope.entityName===name||$scope.mdFile===name+'.md')
+                if(active)console.log('isactive',$scope.entityName,name)
+                return active;
             }  
+
+            $scope.hrefBuild=function(uri){
+                uri=uri.replace(':','');
+                return (settings.root&&settings.root.length)?(settings.root+'/'+uri):uri
+            }
 
             // load on init 
             rdfHelp.query().$promise.then(function(help){

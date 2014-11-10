@@ -7,7 +7,7 @@
 
 
 		// Hashbang in HTML5 Mode
-		$locationProvider.html5Mode(false);
+		$locationProvider.html5Mode(true);
 		$locationProvider.hashPrefix('!');
 
 		$routeProvider

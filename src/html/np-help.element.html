@@ -2,7 +2,7 @@
     <div class="row">
         <section id="{{entity.typeName}}">
 
-            <h2> {{entity.typeName|cleanType}}
+            <h2> {{entity.typeName|cleanType}}  
                 <!-- Possible values -->
                 <div ng-if="entity.values.length > 0" class="btn-group">
                     <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span>
@@ -27,7 +27,7 @@
                 <!-- Reverse Triplets (parents) -->
                 <div class="col-xs-12 col-md-5 vertical-middle ">
                     <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate">
-                        <p><code><a href="#!/{{parent.subjectType|cleanType}}" class="text-info">{{parent.subjectType}}</a></code>
+                        <p><code><a ng-href="{{hrefBuild('entity/'+parent.subjectType)}}" class="text-info">{{parent.subjectType}}</a></code>
                             &nbsp; <code class="text-warning">{{parent.predicate}}</code></span>
                         </p>
                     </div>
@@ -41,7 +41,7 @@
                         <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate">
                                 <code class="text-warning">{{t.predicate}}</code>
                                 <code><a class="text-success"
-                                         href="#!/{{t.objectType|cleanType}}">{{t.objectType}}</a></code>
+                                         ng-href="{{hrefBuild('entity/'+t.objectType)}}">{{t.objectType}}</a></code>
                                 &nbsp;
                                 <span class="label label-info">{{t.tripleCount}}</span>
                                 <!-- Possible values -->
