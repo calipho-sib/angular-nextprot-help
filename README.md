@@ -36,8 +36,8 @@ in your index.html file
         helpPath:'rdfhelp.json',
         helpTitle:'Main truc',
         root:'page', // specify the root of RDF entity routes
-        githubRepo:'aerobatic/markdown-content',
-        githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
+        githubRepo:'<github-user>/<github-repo>',
+        githubToken:'<gitub-token>'
     }    
   </script>
 ```
