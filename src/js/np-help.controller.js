@@ -1,72 +1,102 @@
 (function (ng, undefined) {'use strict';
-    ng.module('npHelp').controller('HelpCtrl', 
-        ['$scope','$location','rdfHelp','settings','$route','$log', 
-        function ($scope, $location, rdfHelp, settings, $route, $log) {
-            //
-            // simple helper to get markdown file from url
-            function parseMdFile(){
-                if(!$location ||!$location.path())return;
-                var page=($location.path().length>1)?$location.path().substring(1):settings.root
-                console.log(page,$location.path())
-                if(page===settings.root){
-                    return settings.pages[0]+'.md'
-                }
-                for(var i in settings.pages){
-                    if(page.indexOf(settings.pages[i])!==-1){
-                        return page+'.md'
-                    }
+    ng.module('npHelp')
+        .controller('HelpCtrl',HelpCtrl) 
+        .controller('DocCtrl',DocCtrl)
+
+
+    //
+    // JSON help controller
+    //
+    HelpCtrl.$inject=['$scope','$location','rdfHelp','settings','$route','gitHubContent','$log'];
+    function HelpCtrl($scope, $location, rdfHelp, settings, $route, gitHubContent, $log) {
+        // 
+        // setup the scope
+        $scope.entityName=$route.current&&$route.current.params.entity||'';
+        $scope.entity={}
+        $scope.settings=settings;
+        $scope.rdfHelp=rdfHelp;
+        $scope.docArticles = [];
+
+        //
+        // update entity documentation on path change
+        $scope.$on('$routeChangeStart', function(event, next, current) { 
+
+            $scope.entity=={}
+            $scope.entityName=undefined
+            if(next&&next.params&&next.params.entity){
+                $scope.entity=$scope.getActiveElement(next.params.entity)
+                $scope.entityName=next.params.entity;
+            }
+            $log.info("entityName",$scope.entityName)
+            $log.info("entity",$scope.entity)
+        });  
+
+        $scope.getActiveElement=function(entity){
+            for (var i in $scope.rdfHelp){
+                if($scope.rdfHelp[i].typeName===':'+entity){
+                    return $scope.rdfHelp[i];
                 }
             }
-            $scope.entityName=$route.current&&$route.current.params.entity||'';
-            $scope.entity={}
-            $scope.settings=settings;
-            $scope.mdFile=parseMdFile();
-            $scope.rdfHelp=rdfHelp;
-            $scope.pushState=$location.$$html5
+        }
 
+        // return true if a name (eg. the/path) is include in the path
+        $scope.isActiveDoc=function(name){
+            return $location.path()&&($location.path().indexOf(name||'-')!==-1);
+        }  
 
+        // return true if an RDF element is include in path
+        $scope.isActiveElement=function(name){
+            name=(name||'').replace(':','');
+            var active=($scope.entityName===name)
+            return active;
+        }  
 
-            //
-            // update entity documentation 
-            $scope.$on('$routeChangeStart', function(event, next, current) { 
+        // strip and build right href for RDF.elements 
+        $scope.hrefBuild=function(uri){
+            uri=uri.replace(':','');
+            return (settings.root&&settings.root.length)?(settings.root+'/'+uri):uri
+        }
 
-                $scope.mdFile=parseMdFile()
-                $scope.entity=={}
-                $scope.entityName=undefined
-                if(next&&next.params&&next.params.entity){
-                    $scope.entity=$scope.getActiveElement(next.params.entity)
-                    $scope.entityName=next.params.entity;
-                }
-                $log.info("mdFile",$scope.mdFile)
-                $log.info("entityName",$scope.entityName)
-                $log.info("entity",$scope.entity)
-            });  
-
-            $scope.getActiveElement=function(entity){
-                for (var i in $scope.rdfHelp){
-                    if($scope.rdfHelp[i].typeName===':'+entity){
-                        return $scope.rdfHelp[i];
-                    }
-                }
-            }
-
-            $scope.isActiveElement=function(name){
-                name=name||''
-                name=name.replace(':','');
-                var active=($scope.entityName===name||$scope.mdFile===name+'.md')
-                if(active)console.log('isactive',$scope.entityName,name)
-                return active;
-            }  
-
-            $scope.hrefBuild=function(uri){
-                uri=uri.replace(':','');
-                return (settings.root&&settings.root.length)?(settings.root+'/'+uri):uri
-            }
-
-            // load on init 
+        //  init help, load JSON help and Github docs content 
+        $scope.initHelp=function(){
             rdfHelp.query().$promise.then(function(help){
                 $scope.entity=$scope.getActiveElement($scope.entityName)
-            })
+                return gitHubContent.contentIndex();
+            })            
+            .then(function(index) {
+                $scope.docArticles = index.docArticles;
+            });
+
         }
-    ]);
+    }
+
+    //
+    // github markdown docs
+    //
+    DocCtrl.$inject=['$scope', '$rootScope', '$location', '$routeParams', '$document', '$sce', 'gitHubContent','settings']
+    function DocCtrl($scope, $rootScope, $location, $routeParams, $document, $sce, gitHubContent,settings){
+        //
+        // setup the scope
+        $scope.article=$routeParams.article;
+
+        //
+        // update page title and get article defined in the path from the github index
+        gitHubContent.contentIndex().then(function(index) {            
+            if (!$routeParams.article) {
+              // this is not possible
+              $log.info('Oops you did somethig wrong you cannot be there')
+              return $location.path('404');
+            }
+
+            var article = _.find(index.docArticles, {'slug': $routeParams.article});
+            if (!article){
+                return $location.path('404');
+            }
+
+            // Set the title of the page
+            $document[0].title = 'Docs | ' + article.title;
+
+            $scope.docArticle = article;
+        });        
+    }
 })(angular);

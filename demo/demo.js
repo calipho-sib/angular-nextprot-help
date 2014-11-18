@@ -11,10 +11,17 @@
 		$locationProvider.hashPrefix('!');
 
 		$routeProvider
-			.when('/', { templateUrl: "html/np-help.md.html" })
-			.when('/faq', { templateUrl: "html/np-help.md.html" })
 			.when('/entity/:entity', { templateUrl: "html/np-help.element.html"})
-			.otherwise({ redirectTo: '/' });
+	    .when('/blog/:year?/:month?/:day?/:title?', {templateUrl: 'html/np-help.doc.html'})
+	    .when('/docs/:article', {templateUrl: 'html/np-help.doc.html'})
+    	.otherwise({ redirectTo: '/' });
 		
-	});  	
+	});
+
+
+	angular.module('main').run(function ($log,gitHubContent) {
+  	$log.info("init githubdoc");
+  	gitHubContent.initialize();
+	});
+
 })(angular);

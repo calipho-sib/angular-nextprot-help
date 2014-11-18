@@ -1,12 +1,15 @@
 {
   "name": "angular-nextprot-help",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "homepage": "https://github.com/calipho-sib/nextprot-ui-help",
   "authors": [
     "calipho <ndu@isb-sib.ch>"
   ],
   "description": "help module for nextprot",
-  "main": ["dist/np-help.js","dist/np-help.css"],
+  "main": [
+    "dist/np-help.js",
+    "dist/np-help.css"
+  ],
   "keywords": [
     "help",
     "angular"
@@ -31,7 +34,8 @@
     "angular-sanitize": "~1",
     "angular-resource": "~1",
     "showdown": "~0.3.1",
-    "bootstrap": "~3.2.0"
+    "bootstrap": "~3.2.0",
+    "underscore": "~1.7.0"
   },
   "devDependencies": {
     "angular-mocks": "latest"
