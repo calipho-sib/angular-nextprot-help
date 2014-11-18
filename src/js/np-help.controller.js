@@ -73,8 +73,8 @@
     //
     // github markdown docs
     //
-    DocCtrl.$inject=['$scope', '$rootScope', '$location', '$routeParams', '$document', '$sce', 'gitHubContent','settings']
-    function DocCtrl($scope, $rootScope, $location, $routeParams, $document, $sce, gitHubContent,settings){
+    DocCtrl.$inject=['$scope', '$rootScope', '$location', '$routeParams', '$document', '$sce', '$log','gitHubContent','settings']
+    function DocCtrl($scope, $rootScope, $location, $routeParams, $document, $sce, $log,gitHubContent,settings){
         //
         // setup the scope
         $scope.article=$routeParams.article;
@@ -83,9 +83,7 @@
         // update page title and get article defined in the path from the github index
         gitHubContent.contentIndex().then(function(index) {            
             if (!$routeParams.article) {
-              // this is not possible
-              $log.info('Oops you did somethig wrong you cannot be there')
-              return $location.path('404');
+              return;
             }
 
             var article = _.find(index.docArticles, {'slug': $routeParams.article});
