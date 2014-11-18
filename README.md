@@ -9,6 +9,41 @@ the easiest way is to run bower, then you just have to add the script and regist
 ```
 ./node_modules/.bin/bower install --save https://github.com/calipho-sib/nextprot-ui-help/tarball/master
 ```
+Setup your angular application to make the help available
+```javascript
+// load the module
+var app=angular.module('app', ['npHelp']);
+...
+// init the module
+app.run(function (gitHubContent) {
+  gitHubContent.initialize();
+});
+
+// configure your routea
+$routeProvider
+    .when('/page/entity/:entity',{title: 'help for snorql', templateUrl: 'partials/help.html'})
+    .when('/page/:docs?/:article?',{title: 'help for snorql', templateUrl: 'partials/page.html'})
+
+```
+
+in your index.html file
+```html
+  <script>
+    //
+    // global settings for angular-nexprot-ui-help
+    var npHelpSettings={
+        // baseUrl:"http://uat-web2:8080",
+        helpPath:'rdfhelp.json',
+        helpTitle:'Main truc',
+        root:'page', // specify the root of RDF entity routes
+        githubRepo:'aerobatic/markdown-content',
+        githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
+    }    
+  </script>
+```
+
+
+
 
 ## Development
 The easiest way to run the development is to use grunt and open your browser at [http://localhost:3000/demo](http://localhost:3000/demo):
