@@ -8,7 +8,7 @@
         githubApi:'https://api.github.com/repos/',
         githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
     }
-    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings));  
+    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings||{}));  
 })(angular);
 
 (function (ng, undefined) {'use strict';
@@ -290,6 +290,13 @@
             contentIndex: function() {
               return contentIndexDeferred.promise;
             },
+            find:function(slug){
+              // content is not ready
+              if(!contentIndex)return '';
+              var article = _.find(contentIndex.docArticles, {'slug':slug});
+              if(article) return article;
+              return _.find(contentIndex.pages, {'slug':slug});
+            },
             loadSlug:function(slug){
               // article is in cache
               if(loads[slug])
@@ -298,7 +305,7 @@
               // content is not ready
               if(!contentIndex)return '';
 
-              var article = _.find(contentIndex.docArticles, {'slug': slug});
+              var article = this.find(slug);
               return this.load(article)
             },
             load: function(object) {
@@ -436,14 +443,14 @@
         //
         // edit on github on click 
         .directive('editMarkdown', ['gitHubContent','settings',function (gitHubContent, settings) {
-            var github='http://github.com/',opts;
+            var github='http://github.com/',opts='';
             return {
                 restrict: 'A',
                 link: function (scope, element, attr, ctrl) {
                     element.click(function(){
                         if(settings.zenEdit)opts='#fullscreen_blob_contents';                        
                         gitHubContent.contentIndex().then(function(index) {            
-                            var article = _.find(index.docArticles, {'slug': attr.editMarkdown});            
+                            var article = gitHubContent.find(attr.editMarkdown);            
                             window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+opts
                         });                        
                     })
