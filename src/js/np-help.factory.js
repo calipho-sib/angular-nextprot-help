@@ -192,11 +192,10 @@
               if(!contentIndex)return '';
 
               var article = this.find(slug);
-              return this.load(article).promise
+              return this.load(article);
             },
             load: function(object) {
-              // Rather than the GitHub API, just grab the raw source.              
-              // var apiUrl = 'https://raw.githubusercontent.com/aerobatic/markdown-content/master/' + encodeURIComponent(object.gitPath);
+              if(!object) return '';
               var apiUrl = markdownRepo+'/contents/'+object.gitPath+'?'+githubToken;
               var accept={'Accept':'application/vnd.github.VERSION.raw'}
 
