@@ -304,13 +304,13 @@
                 return loads[slug].promise;
 
               // content is not ready
-              if(!contentIndex)return '';
+              if(!contentIndex)return $q.when('');
 
               var article = this.find(slug);
               return this.load(article);
             },
             load: function(object) {
-              if(!object) return '';
+              if(!object) return $q.when('');
               var apiUrl = markdownRepo+'/contents/'+object.gitPath+'?'+githubToken;
               var accept={'Accept':'application/vnd.github.VERSION.raw'}
 
