@@ -8,5 +8,5 @@
         githubApi:'https://api.github.com/repos/',
         githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
     }
-    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings));  
+    ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings||{}));  
 })(angular);
