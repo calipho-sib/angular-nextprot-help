@@ -189,10 +189,13 @@
                 return loads[slug].promise;
 
               // content is not ready
-              if(!contentIndex)return $q.when('');
+              var self=this;
+              // when content is ready
+              return this.contentIndex().then(function(index){
+                  var article = self.find(slug);
+                  return self.load(article);
+              });
 
-              var article = this.find(slug);
-              return this.load(article);
             },
             load: function(object) {
               if(!object) return $q.when('');
