@@ -192,7 +192,7 @@
               if(!contentIndex)return '';
 
               var article = this.find(slug);
-              return this.load(article)
+              return this.load(article).promise
             },
             load: function(object) {
               // Rather than the GitHub API, just grab the raw source.              

@@ -86,7 +86,8 @@
               return;
             }
 
-            var article = _.find(index.docArticles, {'slug': $routeParams.article});
+            var article = gitHubContent.find($routeParams.article);
+            // var article = _.find(index.docArticles, {'slug': $routeParams.article});
             if (!article){
                 return $location.path('404');
             }

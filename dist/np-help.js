@@ -99,7 +99,8 @@
               return;
             }
 
-            var article = _.find(index.docArticles, {'slug': $routeParams.article});
+            var article = gitHubContent.find($routeParams.article);
+            // var article = _.find(index.docArticles, {'slug': $routeParams.article});
             if (!article){
                 return $location.path('404');
             }
@@ -306,7 +307,7 @@
               if(!contentIndex)return '';
 
               var article = this.find(slug);
-              return this.load(article)
+              return this.load(article).promise
             },
             load: function(object) {
               // Rather than the GitHub API, just grab the raw source.              
