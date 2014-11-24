@@ -103,7 +103,7 @@
         //
         // edit on github on click 
         .directive('editMarkdown', ['gitHubContent','settings',function (gitHubContent, settings) {
-            var github='http://github.com/',opts;
+            var github='http://github.com/',opts='';
             return {
                 restrict: 'A',
                 link: function (scope, element, attr, ctrl) {
