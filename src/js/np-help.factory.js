@@ -176,6 +176,13 @@
             contentIndex: function() {
               return contentIndexDeferred.promise;
             },
+            find:function(slug){
+              // content is not ready
+              if(!contentIndex)return '';
+              var article = _.find(contentIndex.docArticles, {'slug':slug});
+              if(article) return article;
+              return _.find(contentIndex.pages, {'slug':slug});
+            },
             loadSlug:function(slug){
               // article is in cache
               if(loads[slug])
@@ -184,7 +191,7 @@
               // content is not ready
               if(!contentIndex)return '';
 
-              var article = _.find(contentIndex.docArticles, {'slug': slug});
+              var article = this.find(slug);
               return this.load(article)
             },
             load: function(object) {

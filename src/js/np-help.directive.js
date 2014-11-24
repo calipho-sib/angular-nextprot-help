@@ -110,7 +110,7 @@
                     element.click(function(){
                         if(settings.zenEdit)opts='#fullscreen_blob_contents';                        
                         gitHubContent.contentIndex().then(function(index) {            
-                            var article = _.find(index.docArticles, {'slug': attr.editMarkdown});            
+                            var article = gitHubContent.find(attr.editMarkdown);            
                             window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+opts
                         });                        
                     })
