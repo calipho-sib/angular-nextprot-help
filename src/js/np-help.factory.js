@@ -79,7 +79,6 @@
     gitHubContent.$inject=['$rootScope','$http','$q','$log','settings'];
     function gitHubContent($rootScope, $http, $q, $log,settings) {
         var markdownRepo = settings.githubApi+settings.githubRepo;
-        var converter = new Showdown.converter();
         var githubToken='access_token='+settings.githubToken
 
         function buildIndexFromGitTree(tree) {
@@ -156,7 +155,11 @@
         // caching markdown load
         var loads={}
         return {
-            initialize: function() {
+            initialize: function(custom) {
+              angular.extend(settings,custom)
+              markdownRepo = settings.githubApi+settings.githubRepo;
+              githubToken='access_token='+settings.githubToken
+
               // Go fetch the GitHub tree with references to our Markdown content blobs
               var apiUrl = markdownRepo + '/git/trees/master?recursive=1'+'&'+githubToken;
 

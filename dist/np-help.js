@@ -1,9 +1,9 @@
 (function (ng) {'use strict';
     var defaultSettings={
-    		helpTitle:'Main articles',
+        zenEdit:false,              // fullscreen edit on github
+    	helpTitle:'Main articles',
         helpPath:'/nextprot-api/rdf/help/type/all.json',
         root:'',
-        pages:['faq','home','entity/'],
         githubRepo:'aerobatic/markdown-content',
         githubApi:'https://api.github.com/repos/',
         githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
@@ -193,7 +193,6 @@
     gitHubContent.$inject=['$rootScope','$http','$q','$log','settings'];
     function gitHubContent($rootScope, $http, $q, $log,settings) {
         var markdownRepo = settings.githubApi+settings.githubRepo;
-        var converter = new Showdown.converter();
         var githubToken='access_token='+settings.githubToken
 
         function buildIndexFromGitTree(tree) {
@@ -270,7 +269,11 @@
         // caching markdown load
         var loads={}
         return {
-            initialize: function() {
+            initialize: function(custom) {
+              angular.extend(settings,custom)
+              markdownRepo = settings.githubApi+settings.githubRepo;
+              githubToken='access_token='+settings.githubToken
+
               // Go fetch the GitHub tree with references to our Markdown content blobs
               var apiUrl = markdownRepo + '/git/trees/master?recursive=1'+'&'+githubToken;
 
@@ -433,15 +436,15 @@
         //
         // edit on github on click 
         .directive('editMarkdown', ['gitHubContent','settings',function (gitHubContent, settings) {
-            var github='http://github.com/';
+            var github='http://github.com/',opts;
             return {
                 restrict: 'A',
                 link: function (scope, element, attr, ctrl) {
                     element.click(function(){
-                        console.log('click on',attr.editMarkdown)
+                        if(settings.zenEdit)opts='#fullscreen_blob_contents';                        
                         gitHubContent.contentIndex().then(function(index) {            
                             var article = _.find(index.docArticles, {'slug': attr.editMarkdown});            
-                            window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+'#fullscreen_blob_contents'
+                            window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+opts
                         });                        
                     })
                 }
