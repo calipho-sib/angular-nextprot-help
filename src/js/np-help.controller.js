@@ -41,6 +41,9 @@
 
         // return true if a name (eg. the/path) is include in the path
         $scope.isActiveDoc=function(name){
+            if(!name){
+                return $location.path()==='/'
+            }
             return $location.path()&&($location.path().indexOf(name||'-')!==-1);
         }  
 
