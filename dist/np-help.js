@@ -279,7 +279,10 @@
               githubToken='access_token='+settings.githubToken
 
               // Go fetch the GitHub tree with references to our Markdown content blobs
-              var apiUrl = markdownRepo + '/git/trees/master?recursive=1'+'&'+githubToken;
+              var apiUrl = markdownRepo + '/git/trees/master?recursive=1';
+	      if((settings.githubToken) && (settings.githubToken != null)){
+	      	apiUrl += '&'+githubToken;
+	      }
 
               // $http.get('/proxy?url=' + encodeURIComponent(apiUrl) + '&cache=1&ttl=600').success(function(data) {
               $http.get(apiUrl).success(function(data) {
