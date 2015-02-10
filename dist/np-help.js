@@ -122,7 +122,7 @@
     //
     ng.module('npHelp')
         .factory('rdfHelp', rdfHelp)
-        .factory('gitHubContent', gitHubContent) 
+        .factory('gitHubContent', gitHubContent)
 
 
 
@@ -145,7 +145,7 @@
         .replace(/-+/g, '-'); // collapse dashes
 
       return str;
-    };        
+    };
 
     //
     // simple function to strLeftBack in javascript
@@ -159,10 +159,10 @@
     //
     // factory rdfHelp, is a simple wrapper to load JSON data
     rdfHelp.$inject=['$resource','$q','settings'];
-    function rdfHelp($resource, $q, settings) {        
+    function rdfHelp($resource, $q, settings) {
         var Help=function(){
             this.$dao={
-                rdfHelp:$resource((settings.baseUrl||'') + settings.helpPath)   
+                rdfHelp:$resource((settings.baseUrl||'') + settings.helpPath)
             }
 
             this.ready=false;
@@ -176,13 +176,13 @@
             var self=this;
 
             // is emtpy
-            if(!this.ready){                
+            if(!this.ready){
                 this.$promise=self.$dao.rdfHelp.query().$promise;
 
                 this.$promise.then(function (data) {
                     angular.extend(self,data);
                     self.ready=true;
-                }); 
+                });
             }
             return this;
         }
@@ -279,7 +279,7 @@
               githubToken='access_token='+settings.githubToken
 
               // Go fetch the GitHub tree with references to our Markdown content blobs
-              var apiUrl = markdownRepo + '/git/trees/master?recursive=1'+'&'+githubToken;
+              var apiUrl = markdownRepo + '/git/trees/master?recursive=1';
               if((settings.githubToken) && (settings.githubToken != null)){
                 apiUrl += '&'+githubToken;
               }
