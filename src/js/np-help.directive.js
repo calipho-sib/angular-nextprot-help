@@ -26,13 +26,13 @@
         //  - from github repository
         //  - from dynamic content
         //  - from static content
-        .directive("markdown", ['$compile', '$http', '$parse', '$sce','gitHubContent', 
+        .directive("markdown", ['$compile', '$http', '$parse', '$sce','gitHubContent',
           function ($compile, $http, $parse, $sce, gitHubContent) {
             //
             // load markdown converter
             var converter = new Showdown.converter();
             //
-            // insert html in element and perform some UI tweaks 
+            // insert html in element and perform some UI tweaks
             function loadHtml(element, html){
                 try{element.html(html)}catch(e){}
 
@@ -65,7 +65,7 @@
                                 element.html(converter.makeHtml(data.data));
                             },function(data){
                                 //
-                                // silently quit on error 
+                                // silently quit on error
                                 if(opts.silent){
                                     return element.hide();
                                 }
@@ -75,8 +75,8 @@
                         });
 
                         //
-                        // convert markdown from attribut 
-                    } else if (attrs.markdownContent){                        
+                        // convert markdown from attribut
+                    } else if (attrs.markdownContent){
                         attrs.$observe('markdownContent', function(md) {
                             loadHtml(element,converter.makeHtml(md))
                         });
@@ -89,7 +89,7 @@
                             gitHubContent.loadSlug(markdownArticle).then(function(content) {
                               loadHtml(element,$sce.trustAsHtml(converter.makeHtml(content)).toString());
                             });
-                        })                        
+                        })
                     } else {
                         //
                         // else convert markdown from static text
@@ -101,18 +101,20 @@
         }])
 
         //
-        // edit on github on click 
+        // edit on github on click
         .directive('editMarkdown', ['gitHubContent','settings',function (gitHubContent, settings) {
             var github='http://github.com/',opts='';
             return {
                 restrict: 'A',
                 link: function (scope, element, attr, ctrl) {
                     element.click(function(){
-                        if(settings.zenEdit)opts='#fullscreen_blob_contents';                        
-                        gitHubContent.contentIndex().then(function(index) {            
-                            var article = gitHubContent.find(attr.editMarkdown);            
-                            window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+opts
-                        });                        
+                        if(settings.zenEdit)opts='#fullscreen_blob_contents';
+                        gitHubContent.contentIndex().then(function(index) {
+                            var article = gitHubContent.find(attr.editMarkdown);
+                            if(settings.githubEditPage){
+                              window.location.href=settings.githubEditPage+article.gitPath+opts
+                            } else window.location.href=github+settings.githubRepo+'/edit/master/'+article.gitPath+opts //keep for backward compatibiliy if not using the API
+                        });
                     })
                 }
             };
@@ -130,7 +132,7 @@
                     type=type.toLowerCase()
                 return type;
             };
-        }]);        
+        }]);
 
 
 })(angular);
