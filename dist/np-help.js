@@ -233,8 +233,8 @@
                 }
                 //
                 // load docs
-                // path is in the form docs/01-introduction.md
-                else if (path[0] === 'docs') {
+                // path is in the form docs/01_introduction.md => urlPath root/introduction
+                else if (path[0] === 'generalities') {
                   var titleParts = path[1].split('_');
                   var articleTitle = titleParts[1].strLeftBack('.');
                   var slug = slugify(articleTitle);
@@ -244,8 +244,22 @@
                     slug: slug,
                     sequence: titleParts[0],
                     gitPath: node.path,
-                    urlPath: settings.root+'/docs/' + slug
+                    urlPath: settings.root + '/' + slug
                   });
+                }
+                //
+                // load file in help
+                // path is in the form help/learn-advanced-search.md => urlPath root/learn-advanced-search
+                else if (path[0] === 'help') {
+                    var pageTitle = path[1].strLeftBack('.');
+                    var slug = slugify(pageTitle);
+
+                    index.pages.push({
+                        title: pageTitle,
+                        slug: slug,
+                        gitPath: node.path,
+                        urlPath: settings.root + '/' + slug
+                    });
                 }
                 else if(path[0]==='pages'){
                   var pageTitle = path[1].strLeftBack('.');
@@ -255,7 +269,7 @@
                     title: pageTitle,
                     slug: slug,
                     gitPath: node.path,
-                    urlPath: settings.root+'/pages/' + slug
+                    urlPath: slug
                   });
                 }
               }
