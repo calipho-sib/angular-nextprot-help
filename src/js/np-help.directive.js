@@ -132,7 +132,16 @@
                     type=type.toLowerCase()
                 return type;
             };
-        }]);
+        }])
 
+        .filter('objectToArray', function() {
+            return function(items) {
+                var filtered = [];
+                angular.forEach(items, function(item) {
+                    filtered.push(item);
+                });
+                return filtered;
+            };
+        });
 
 })(angular);
