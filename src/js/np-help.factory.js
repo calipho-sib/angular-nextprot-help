@@ -84,7 +84,8 @@
         function buildIndexFromGitTree(tree) {
             var index = {
               blogPosts: [],
-              docArticles: [],
+              docGeneralities: [],
+              docHelp: [],
               pages:[]
             };
 
@@ -121,7 +122,7 @@
                   var articleTitle = titleParts[1].strLeftBack('.');
                   var slug = slugify(articleTitle);
 
-                  index.docArticles.push({
+                  index.docGeneralities.push({
                     title: articleTitle,
                     slug: slug,
                     sequence: titleParts[0],
@@ -136,7 +137,7 @@
                     var pageTitle = path[1].strLeftBack('.');
                     var slug = slugify(pageTitle);
 
-                    index.pages.push({
+                    index.docHelp.push({
                         title: pageTitle,
                         slug: slug,
                         gitPath: node.path,
@@ -160,7 +161,7 @@
             // Sort the blogPosts in reverse chronological order and doc articles
             // by the sequence prefix, i.e. 01, 02, etc.
             index.blogPosts = _.sortBy(index.blogPosts, 'date').reverse();
-            index.docArticles = _.sortBy(index.docArticles, 'sequence');
+            index.docGeneralities = _.sortBy(index.docGeneralities, 'sequence');
             return index;
         }
 
@@ -195,8 +196,12 @@
             },
             find:function(slug){
               // content is not ready
-              if(!contentIndex)return '';
-              var article = _.find(contentIndex.docArticles, {'slug':slug});
+              if(!contentIndex) return '';
+              // try to get article in generalities
+              var article = _.find(contentIndex.docGeneralities, {'slug':slug});
+              if(article) return article;
+              // try to get article in help
+              var article = _.find(contentIndex.docHelp, {'slug':slug});
               if(article) return article;
               return _.find(contentIndex.pages, {'slug':slug});
             },

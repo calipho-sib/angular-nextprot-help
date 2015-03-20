@@ -28,7 +28,8 @@
         $scope.entity={}
         $scope.settings=settings;
         $scope.rdfHelp=rdfHelp;
-        $scope.docArticles = [];
+        $scope.docGeneralities = [];
+        $scope.docHelp = [];
 
         //
         // update entity documentation on path change
@@ -80,7 +81,8 @@
                 return gitHubContent.contentIndex();
             })            
             .then(function(index) {
-                $scope.docArticles = index.docArticles;
+                $scope.docGeneralities = index.docGeneralities;
+                $scope.docHelp = index.docHelp;
             });
 
         }
@@ -103,7 +105,7 @@
             }
 
             var article = gitHubContent.find($routeParams.article);
-            // var article = _.find(index.docArticles, {'slug': $routeParams.article});
+            // var article = _.find(index.docGeneralities, {'slug': $routeParams.article});
             if (!article){
                 return $location.path('404');
             }
@@ -111,7 +113,7 @@
             // Set the title of the page
             $document[0].title = 'Docs | ' + article.title;
 
-            $scope.docArticle = article;
+            $scope.docGeneralities = article;
         });        
     }
 })(angular);
@@ -202,7 +204,8 @@
         function buildIndexFromGitTree(tree) {
             var index = {
               blogPosts: [],
-              docArticles: [],
+              docGeneralities: [],
+              docHelp: [],
               pages:[]
             };
 
@@ -239,7 +242,7 @@
                   var articleTitle = titleParts[1].strLeftBack('.');
                   var slug = slugify(articleTitle);
 
-                  index.docArticles.push({
+                  index.docGeneralities.push({
                     title: articleTitle,
                     slug: slug,
                     sequence: titleParts[0],
@@ -254,7 +257,7 @@
                     var pageTitle = path[1].strLeftBack('.');
                     var slug = slugify(pageTitle);
 
-                    index.pages.push({
+                    index.docHelp.push({
                         title: pageTitle,
                         slug: slug,
                         gitPath: node.path,
@@ -278,7 +281,7 @@
             // Sort the blogPosts in reverse chronological order and doc articles
             // by the sequence prefix, i.e. 01, 02, etc.
             index.blogPosts = _.sortBy(index.blogPosts, 'date').reverse();
-            index.docArticles = _.sortBy(index.docArticles, 'sequence');
+            index.docGeneralities = _.sortBy(index.docGeneralities, 'sequence');
             return index;
         }
 
@@ -313,8 +316,12 @@
             },
             find:function(slug){
               // content is not ready
-              if(!contentIndex)return '';
-              var article = _.find(contentIndex.docArticles, {'slug':slug});
+              if(!contentIndex) return '';
+              // try to get article in generalities
+              var article = _.find(contentIndex.docGeneralities, {'slug':slug});
+              if(article) return article;
+              // try to get article in help
+              var article = _.find(contentIndex.docHelp, {'slug':slug});
               if(article) return article;
               return _.find(contentIndex.pages, {'slug':slug});
             },
@@ -512,5 +519,5 @@
 angular.module('npHelp').run(['$templateCache', function ($templateCache) {
 	$templateCache.put('html/np-help.doc.html', '<div ng-controller="DocCtrl"> <markdown markdown-article="{{article}}"></markdown> <div class="clearfix gh-page-improve gh-page-{{article}}"> <hr/> <button class="btn btn-primary pull-right" edit-markdown="{{article}}">Improve this page</button> </div> </div> ');
 	$templateCache.put('html/np-help.element.html', '<div class="row offset1"> <div class="row"> <section id="{{entity.typeName}}"> <h2> {{entity.typeName|cleanType}}  <div ng-if="entity.values.length> 0" class="btn-group"> <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span> </button> <ul class="dropdown-menu"> <li ng-repeat="value in entity.values"><a href="">{{value}}</a></li> </ul> </div> <span class="badge badge-info">{{entity.instanceCount}}</span> </h2> <blockquote> {{entity.rdfsComment}} </blockquote> <div class="row"> <div class="col-xs-12 col-md-5 vertical-middle "> <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate"> <p><code><a ng-href="{{hrefBuild(\'entity/\'+parent.subjectType)}}" class="text-info">{{parent.subjectType}}</a></code> &nbsp; <code class="text-warning">{{parent.predicate}}</code></span> </p> </div> </div> <div class="col-xs-12 col-md-7 form-inline"> <div class="panel panel-default"> <div class="panel-heading"><h5 class="text-center">{{entity.typeName}}</h5></div> <div class="panel-body"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-warning">{{t.predicate}}</code> <code><a class="text-success" ng-href="{{hrefBuild(\'entity/\'+t.objectType)}}">{{t.objectType}}</a></code> &nbsp; <span class="label label-info">{{t.tripleCount}}</span> <select ng-if="t.literalType && t.values.length> 1" class="form-control"> <option ng-repeat="value in t.values" value="{{value}}">{{value}}</option> </select> <input ng-if="t.literalType && t.values.length==1" type="text" placeholder="{{t.values[0]}}" class="form-control"></input> </div> </div> </div> </div> </div> <div class="bs-docs-example"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-info">{{t.tripleSample}}</code> </div> </div> <div class="bs-docs-example"> <div ng-repeat="path in entity.pathToOrigin"> <code class="text-info">{{path}} ?statement</code> </div> </div> </section> </div> </div>');
-	$templateCache.put('html/np-help.toc.html', '<ul class="nav nav-sidebar"> <li><h5>{{settings.helpTitle}}</h5></li> <li ng-repeat="article in docArticles" ng-class="{\'active\':isActiveDoc(article.urlPath)}"><a ng-href="{{article.urlPath}}">{{article.title}}</a></li> <li><h5>RDF Entities</h5></li> <li ng-repeat="rh in (rdfHelp | objectToArray) | orderBy:\'typeName\' | filter : rdfHelp.triples.predicate track by $index" ng-class="{\'active\':isActiveElement(rh.typeName)}" ng-if="rh.typeName"> <a ng-href="{{hrefBuild(\'entity/\'+rh.typeName)}}">{{rh.typeName|cleanType}} ({{rh.instanceCount}})</a> </li> </ul>');
+	$templateCache.put('html/np-help.toc.html', '<ul class="nav nav-sidebar"> <li><h5>{{settings.helpTitle}}</h5></li> <li ng-repeat="article in docGeneralities" ng-class="{\'active\':isActiveDoc(article.urlPath)}"><a ng-href="{{article.urlPath}}">{{article.title}}</a></li> <li><h5>RDF Entities</h5></li> <li ng-repeat="rh in (rdfHelp | objectToArray) | orderBy:\'typeName\' | filter : rdfHelp.triples.predicate track by $index" ng-class="{\'active\':isActiveElement(rh.typeName)}" ng-if="rh.typeName"> <a ng-href="{{hrefBuild(\'entity/\'+rh.typeName)}}">{{rh.typeName|cleanType}} ({{rh.instanceCount}})</a> </li> </ul>');
 }]);

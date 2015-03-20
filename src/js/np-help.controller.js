@@ -15,7 +15,8 @@
         $scope.entity={}
         $scope.settings=settings;
         $scope.rdfHelp=rdfHelp;
-        $scope.docArticles = [];
+        $scope.docGeneralities = [];
+        $scope.docHelp = [];
 
         //
         // update entity documentation on path change
@@ -67,7 +68,8 @@
                 return gitHubContent.contentIndex();
             })            
             .then(function(index) {
-                $scope.docArticles = index.docArticles;
+                $scope.docGeneralities = index.docGeneralities;
+                $scope.docHelp = index.docHelp;
             });
 
         }
@@ -90,7 +92,7 @@
             }
 
             var article = gitHubContent.find($routeParams.article);
-            // var article = _.find(index.docArticles, {'slug': $routeParams.article});
+            // var article = _.find(index.docGeneralities, {'slug': $routeParams.article});
             if (!article){
                 return $location.path('404');
             }
@@ -98,7 +100,7 @@
             // Set the title of the page
             $document[0].title = 'Docs | ' + article.title;
 
-            $scope.docArticle = article;
+            $scope.docGeneralities = article;
         });        
     }
 })(angular);

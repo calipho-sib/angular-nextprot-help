@@ -1,6 +1,6 @@
 <ul class="nav nav-sidebar">
     <li><h5>{{settings.helpTitle}}</h5></li>
-    <li ng-repeat="article in docArticles" ng-class="{'active':isActiveDoc(article.urlPath)}"><a
+    <li ng-repeat="article in docGeneralities" ng-class="{'active':isActiveDoc(article.urlPath)}"><a
             ng-href="{{article.urlPath}}">{{article.title}}</a></li>
     <li><h5>RDF Entities</h5></li>
     <li ng-repeat="rh in (rdfHelp | objectToArray) | orderBy:'typeName' | filter : rdfHelp.triples.predicate track by $index"
