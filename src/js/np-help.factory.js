@@ -44,7 +44,7 @@
     function rdfHelp($resource, $q, settings) {
         var Help=function(){
             this.$dao={
-                rdfHelp:$resource((settings.baseUrl||'') + settings.helpPath)
+                rdfHelp:$resource(settings.helpPath)
             }
 
             this.ready=false;
@@ -127,7 +127,7 @@
                     slug: slug,
                     sequence: titleParts[0],
                     gitPath: node.path,
-                    urlPath: settings.root + '/' + slug
+                    urlPath: settings.root + '/doc/' + slug
                   });
                 }
                 //
@@ -141,7 +141,7 @@
                         title: pageTitle,
                         slug: slug,
                         gitPath: node.path,
-                        urlPath: settings.root + '/' + slug
+                        urlPath: settings.root + '/help/' + slug
                     });
                 }
                 else if(path[0]==='pages'){
