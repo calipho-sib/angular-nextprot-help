@@ -78,8 +78,8 @@
     //
     // github markdown docs
     //
-    DocCtrl.$inject=['$scope', '$rootScope', '$location', '$routeParams', '$document', '$sce', '$log','gitHubContent','settings']
-    function DocCtrl($scope, $rootScope, $location, $routeParams, $document, $sce, $log,gitHubContent,settings){
+    DocCtrl.$inject=['$scope', '$rootScope', '$location', '$routeParams', '$document', '$sce', '$log', 'gitHubContent', 'settings']
+    function DocCtrl($scope, $rootScope, $location, $routeParams, $document, $sce, $log, gitHubContent, settings){
         //
         // setup the scope
         $scope.article=$routeParams.article;
@@ -92,15 +92,24 @@
             }
 
             var article = gitHubContent.find($routeParams.article);
-            // var article = _.find(index.docGeneralities, {'slug': $routeParams.article});
             if (!article){
                 return $location.path('404');
             }
 
-            // Set the title of the page
-            $document[0].title = 'Docs | ' + article.title;
+            // Set the title of the page according to current article
+            var niceTitle = article.title.charAt(0).toUpperCase() + article.title.slice(1);
+            niceTitle = niceTitle.replace(/-/g," ");
 
-            $scope.docGeneralities = article;
-        });        
+            if (_.find(index.docGeneralities, {'slug':article.slug})) {
+                $document[0].title = 'RDF Help | ' + niceTitle;
+                $scope.docGeneralities = article;
+            } else if (_.find(index.docHelp, {'slug':article.slug})) {
+                $document[0].title = 'Help | ' + niceTitle;
+                $scope.docHelp = article;
+            } else if (_.find(index.pages, {'slug':article.slug})) {
+                $document[0].title = 'Docs | ' + niceTitle;
+                $scope.pages = article;
+            }
+        });
     }
 })(angular);
