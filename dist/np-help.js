@@ -1,12 +1,14 @@
 (function (ng) {'use strict';
     var defaultSettings={
         zenEdit:false,              // fullscreen edit on github
-    	helpTitle:'Main articles',
-        helpPath:'/nextprot-api/rdf/help/type/all.json',
-        root:'',
-        githubRepo:'aerobatic/markdown-content',
-        githubApi:'https://api.github.com/repos/',
-        githubToken:'2e36ce76cfb03358f0a38630007840e7cb432a24'
+        helpPath: 'rdfhelp.json',
+        helpTitle: 'Main articles',
+        root: '',               // specify a URI prefix
+        githubRepo: '/',
+        githubApi:'http://dev-api.nextprot.org',
+        githubEditPage : "https://github.com/calipho-sib/nextprot-docs/edit/master/",
+        githubToken : null
+
     }
     ng.module('npHelp',['ngRoute']).constant('settings', angular.extend(defaultSettings,npHelpSettings||{}));  
 })(angular);
@@ -30,6 +32,7 @@
         $scope.rdfHelp=rdfHelp;
         $scope.docGeneralities = [];
         $scope.docHelp = [];
+        $scope.newsPosts = [];
 
         //
         // update entity documentation on path change
@@ -83,6 +86,7 @@
             .then(function(index) {
                 $scope.docGeneralities = index.docGeneralities;
                 $scope.docHelp = index.docHelp;
+                $scope.newsPosts = index.newsPosts;
             });
 
         }
@@ -122,6 +126,9 @@
             } else if (_.find(index.pages, {'slug':article.slug})) {
                 $document[0].title = 'Docs | ' + niceTitle;
                 $scope.pages = article;
+            } else if (_.find(index.newsPosts, {'slug':article.slug})) {
+                $document[0].title = 'News | ' + niceTitle;
+                $scope.newsPosts = article;
             }
         });
     }
@@ -208,11 +215,11 @@
     gitHubContent.$inject=['$rootScope','$http','$q','$log','settings'];
     function gitHubContent($rootScope, $http, $q, $log,settings) {
         var markdownRepo = settings.githubApi+settings.githubRepo;
-        var githubToken='access_token='+settings.githubToken
+        var githubToken='access_token='+settings.githubToken;
 
         function buildIndexFromGitTree(tree) {
             var index = {
-              blogPosts: [],
+              newsPosts: [],
               docGeneralities: [],
               docHelp: [],
               pages:[]
@@ -220,43 +227,40 @@
 
             _.each(tree, function(node) {
               if (node.type === 'blob') {
-                // Value of path is in format 'blog/yyyy/mm/dd/title.md'
+                // Value of path is in format 'blog/yyyy/mm/dd/Example title.md'
                 var path = node.path.split('/');
                 //
-                // load blogs
+                // load news
                 if (path[0] === 'blog') {
-                  // Strip off the .md extension
+                  // Remove the .md extension (for instance, title = "Example title")
                   var title = path[4].strLeftBack('.');
 
-                  // Use underscore.string to slugify the title
-                  var titleSlug = slugify(title);
+                  // Use '_' to slugify the title (for instance, title = "example_title")
+                  var slugTitle = slugify(title);
 
-                  index.blogPosts.push({
+                  index.newsPosts.push({
                     // Build a JS date from '2014/07/05'
                     date: new Date(parseInt(path[1]), parseInt(path[2]) - 1, parseInt(path[3])),
                     title: title,
-                    sha: node.sha,
+                    slug: slugTitle,
                     gitPath: node.path,
-                    titleSlug: titleSlug,
-                    // Use underscore.string slugify function to get a URL safe
-                    // reprensentation of the title
-                    urlPath: settings.root+'/' + path.slice(0, 4).concat(titleSlug).join('/')
+                    // We use the slugified title to get a safe URL representation of the title
+                    urlPath: settings.root+'/news/' + path.slice(1, 4).concat(slugTitle).join('/')
                   });
                 }
-                //
                 // load docs
                 // path is in the form docs/01_introduction.md => urlPath root/introduction
                 else if (path[0] === 'generalities') {
                   var titleParts = path[1].split('_');
                   var articleTitle = titleParts[1].strLeftBack('.');
-                  var slug = slugify(articleTitle);
+                  var slugTitle = slugify(articleTitle);
 
                   index.docGeneralities.push({
                     title: articleTitle,
-                    slug: slug,
+                    slug: slugTitle,
                     sequence: titleParts[0],
                     gitPath: node.path,
-                    urlPath: settings.root + '/doc/' + slug
+                    urlPath: settings.root + '/doc/' + slugTitle
                   });
                 }
                 //
@@ -264,32 +268,32 @@
                 // path is in the form help/learn-advanced-search.md => urlPath root/learn-advanced-search
                 else if (path[0] === 'help') {
                     var pageTitle = path[1].strLeftBack('.');
-                    var slug = slugify(pageTitle);
+                    var slugTitle = slugify(pageTitle);
 
                     index.docHelp.push({
                         title: pageTitle,
-                        slug: slug,
+                        slug: slugTitle,
                         gitPath: node.path,
-                        urlPath: settings.root + '/help/' + slug
+                        urlPath: settings.root + '/help/' + slugTitle
                     });
                 }
                 else if(path[0]==='pages'){
                   var pageTitle = path[1].strLeftBack('.');
-                  var slug = slugify(pageTitle);
+                  var slugTitle = slugify(pageTitle);
 
                   index.pages.push({
                     title: pageTitle,
-                    slug: slug,
+                    slug: slugTitle,
                     gitPath: node.path,
-                    urlPath: slug
+                    urlPath: slugTitle
                   });
                 }
               }
             });
 
-            // Sort the blogPosts in reverse chronological order and doc articles
+            // Sort the newsPosts in reverse chronological order and doc articles
             // by the sequence prefix, i.e. 01, 02, etc.
-            index.blogPosts = _.sortBy(index.blogPosts, 'date').reverse();
+            index.newsPosts = _.sortBy(index.newsPosts, 'date').reverse();
             index.docGeneralities = _.sortBy(index.docGeneralities, 'sequence');
             return index;
         }
@@ -398,6 +402,17 @@
                 }
             };
         }])
+
+        .directive('newsToc', [function () {
+            return {
+                restrict: 'E',
+                transclude: true,
+                templateUrl: 'html/np-news.toc.html',
+                link: function (scope, element, attr, ctrl) {
+                }
+            };
+        }])
+
 
         //
         // different way to display markdown content:
@@ -529,4 +544,5 @@ angular.module('npHelp').run(['$templateCache', function ($templateCache) {
 	$templateCache.put('html/np-help.doc.html', '<div ng-controller="DocCtrl"> <markdown markdown-article="{{article}}"></markdown> <div class="clearfix gh-page-improve gh-page-{{article}}"> <hr/> <button class="btn btn-primary pull-right" edit-markdown="{{article}}">Improve this page</button> </div> </div> ');
 	$templateCache.put('html/np-help.element.html', '<div class="row offset1"> <div class="row"> <section id="{{entity.typeName}}"> <h2> {{entity.typeName|cleanType}}  <div ng-if="entity.values.length> 0" class="btn-group"> <button class="btn dropdown-toggle" data-toggle="dropdown">Values<span class="caret"></span> </button> <ul class="dropdown-menu"> <li ng-repeat="value in entity.values"><a href="">{{value}}</a></li> </ul> </div> <span class="badge badge-info">{{entity.instanceCount}}</span> </h2> <blockquote> {{entity.rdfsComment}} </blockquote> <div class="row"> <div class="col-xs-12 col-md-5 vertical-middle "> <div ng-repeat="parent in entity.parentTriples | filter : rdfHelp.triples.predicate"> <p><code><a ng-href="{{hrefBuild(\'entity/\'+parent.subjectType)}}" class="text-info">{{parent.subjectType}}</a></code> &nbsp; <code class="text-warning">{{parent.predicate}}</code></span> </p> </div> </div> <div class="col-xs-12 col-md-7 form-inline"> <div class="panel panel-default"> <div class="panel-heading"><h5 class="text-center">{{entity.typeName}}</h5></div> <div class="panel-body"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-warning">{{t.predicate}}</code> <code><a class="text-success" ng-href="{{hrefBuild(\'entity/\'+t.objectType)}}">{{t.objectType}}</a></code> &nbsp; <span class="label label-info">{{t.tripleCount}}</span> <select ng-if="t.literalType && t.values.length> 1" class="form-control"> <option ng-repeat="value in t.values" value="{{value}}">{{value}}</option> </select> <input ng-if="t.literalType && t.values.length==1" type="text" placeholder="{{t.values[0]}}" class="form-control"></input> </div> </div> </div> </div> </div> <div class="bs-docs-example"> <div ng-repeat="t in entity.triples | filter : rdfHelp.triples.predicate"> <code class="text-info">{{t.tripleSample}}</code> </div> </div> <div class="bs-docs-example"> <div ng-repeat="path in entity.pathToOrigin"> <code class="text-info">{{path}} ?statement</code> </div> </div> </section> </div> </div>');
 	$templateCache.put('html/np-help.toc.html', '<ul class="nav nav-sidebar"> <li><h5>{{settings.helpTitle}}</h5></li> <li ng-repeat="article in docGeneralities" ng-class="{\'active\':isActiveDoc(article.urlPath)}"><a ng-href="{{article.urlPath}}">{{article.title}}</a></li> <li><h5>RDF Entities</h5></li> <li ng-repeat="rh in (rdfHelp | objectToArray) | orderBy:\'typeName\' | filter : rdfHelp.triples.predicate track by $index" ng-class="{\'active\':isActiveElement(rh.typeName)}" ng-if="rh.typeName"> <a ng-href="{{hrefBuild(\'entity/\'+rh.typeName)}}">{{rh.typeName|cleanType}} ({{rh.instanceCount}})</a> </li> </ul>');
+	$templateCache.put('html/np-news.toc.html', '<ul class="nav nav-sidebar"> <li><h5>News</h5></li> <li ng-repeat="post in newsPosts" ng-class="{\'active\':isActiveDoc(post.urlPath)}"> <a ng-href="{{post.urlPath}}"> {{post.title}} <span class="date">{{post.date.getFullYear()}}-{{post.date.getMonth()}}-{{post.date.getDay()}} </span></a> </li> </ul> ');
 }]);

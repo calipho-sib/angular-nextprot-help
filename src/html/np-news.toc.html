@@ -1,0 +1,9 @@
+<ul class="nav nav-sidebar">
+    <li><h5>News</h5></li>
+    <li ng-repeat="post in newsPosts" ng-class="{'active':isActiveDoc(post.urlPath)}">
+        <a ng-href="{{post.urlPath}}">
+            {{post.title}}
+            <span class="date">{{post.date.getFullYear()}}-{{post.date.getMonth()}}-{{post.date.getDay()}}
+        </span></a>
+    </li>
+</ul>

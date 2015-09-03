@@ -17,6 +17,7 @@
         $scope.rdfHelp=rdfHelp;
         $scope.docGeneralities = [];
         $scope.docHelp = [];
+        $scope.newsPosts = [];
 
         //
         // update entity documentation on path change
@@ -70,6 +71,7 @@
             .then(function(index) {
                 $scope.docGeneralities = index.docGeneralities;
                 $scope.docHelp = index.docHelp;
+                $scope.newsPosts = index.newsPosts;
             });
 
         }
@@ -109,6 +111,9 @@
             } else if (_.find(index.pages, {'slug':article.slug})) {
                 $document[0].title = 'Docs | ' + niceTitle;
                 $scope.pages = article;
+            } else if (_.find(index.newsPosts, {'slug':article.slug})) {
+                $document[0].title = 'News | ' + niceTitle;
+                $scope.newsPosts = article;
             }
         });
     }

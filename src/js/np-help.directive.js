@@ -20,6 +20,17 @@
             };
         }])
 
+        .directive('newsToc', [function () {
+            return {
+                restrict: 'E',
+                transclude: true,
+                templateUrl: 'html/np-news.toc.html',
+                link: function (scope, element, attr, ctrl) {
+                }
+            };
+        }])
+
+
         //
         // different way to display markdown content:
         //  - from any URL
