@@ -12,7 +12,7 @@
 
 		$routeProvider
 			.when('/entity/:entity', { templateUrl: "html/np-help.element.html"})
-	    	.when('/news/:year?/:month?/:day?/:title?', {templateUrl: 'html/np-help.doc.html'})
+	    	.when('/news/:article', {templateUrl: 'html/np-help.doc.html'})
 	    	.when('/docs/:article', {templateUrl: 'html/np-help.doc.html'})
     		.otherwise({ redirectTo: '/' });
 		

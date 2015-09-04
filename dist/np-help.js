@@ -245,7 +245,7 @@
                     slug: slugTitle,
                     gitPath: node.path,
                     // We use the slugified title to get a safe URL representation of the title
-                    urlPath: settings.root+'/news/' + path.slice(1, 4).concat(slugTitle).join('/')
+                    urlPath: '/news/' + slugTitle
                   });
                 }
                 // load docs

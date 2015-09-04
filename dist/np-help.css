@@ -112,7 +112,6 @@ body {
 .help {
     position: fixed;
     height: 80vh;
-    margin-top: -20px;
     overflow-x: hidden;
     overflow-y: auto;
 }
