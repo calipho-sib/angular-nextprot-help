@@ -71,10 +71,15 @@ body {
   color: #fff;
   background-color: #428bca;
 }
+.nav-sidebar > .active > a > span.date,
+.nav-sidebar > .active > a:hover > span.date,
+.nav-sidebar > .active > a:focus > span.date {
+    color: lightgrey;
+}
 .nav-sidebar .date {
     display: block;
     text-align: right;
-    color:grey;
+    color: grey;
     font-size: 0.9em;
 }
 

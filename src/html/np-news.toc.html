@@ -3,7 +3,7 @@
     <li ng-repeat="post in newsPosts" ng-class="{'active':isActiveDoc(post.urlPath)}">
         <a ng-href="{{post.urlPath}}">
             {{post.title}}
-            <span class="date">{{post.date.getFullYear()}}-{{post.date.getMonth()}}-{{post.date.getDay()}}
+            <span class="date">{{post.date}}
         </span></a>
     </li>
 </ul>
