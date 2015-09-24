@@ -37,7 +37,9 @@ body {
 /* Hide for mobile, show later */
 .sidebar {
   display: none;
+  z-index: 999;
 }
+
 @media (min-width: 768px) {
   .sidebar {
     position: fixed;
