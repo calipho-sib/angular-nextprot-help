@@ -48,7 +48,7 @@ module.exports = function (grunt) {
                 'angular':['jquery','bootstrap','showdown']
             }
           }
-        },        
+        },
         clean: {
             working: {
                 src: ['dist/np-help.*', './.temp/views', './.temp/']
@@ -98,7 +98,7 @@ module.exports = function (grunt) {
                 tasks: ['copy','cssmin'],
                 options: {
                     livereload: true
-                }                
+                }
             },
             js: {
                 files: 'src/js/*.js',
@@ -142,4 +142,7 @@ module.exports = function (grunt) {
             }
         }
     });
+
+    grunt.loadNpmTasks('grunt-bump');
+
 };

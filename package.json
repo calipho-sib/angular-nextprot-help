@@ -12,6 +12,7 @@
     "grunt": "~0.4.2",
     "grunt-bower-concat": "^0.4.0",
     "grunt-bower-task": "^0.4.0",
+    "grunt-bump": "^0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-concat": "~0.3.0",
