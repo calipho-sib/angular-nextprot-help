@@ -1,6 +1,6 @@
 (function (ng, undefined) {'use strict';
     ng.module('npHelp')
-        .controller('HelpCtrl',HelpCtrl) 
+        .controller('HelpCtrl',HelpCtrl)
         .controller('DocCtrl',DocCtrl)
 
 
@@ -9,7 +9,7 @@
     //
     HelpCtrl.$inject=['$scope','$location','rdfHelp','settings','$route','gitHubContent','$log'];
     function HelpCtrl($scope, $location, rdfHelp, settings, $route, gitHubContent, $log) {
-        // 
+        //
         // setup the scope
         $scope.entityName=$route.current&&$route.current.params.entity||'';
         $scope.entity={}
@@ -21,7 +21,7 @@
 
         //
         // update entity documentation on path change
-        $scope.$on('$routeChangeStart', function(event, next, current) { 
+        $scope.$on('$routeChangeStart', function(event, next, current) {
 
             $scope.entity=={}
             $scope.entityName=undefined
@@ -31,7 +31,7 @@
             }
             $log.info("entityName",$scope.entityName)
             $log.info("entity",$scope.entity)
-        });  
+        });
 
         $scope.getActiveElement=function(entity){
             for (var i in $scope.rdfHelp){
@@ -47,27 +47,27 @@
                 return $location.path()==='/'
             }
             return $location.path()&&($location.path().indexOf(name||'-')!==-1);
-        }  
+        }
 
         // return true if an RDF element is include in path
         $scope.isActiveElement=function(name){
             name=(name||'').replace(':','');
             var active=($scope.entityName===name)
             return active;
-        }  
+        }
 
-        // strip and build right href for RDF.elements 
+        // strip and build right href for RDF.elements
         $scope.hrefBuild=function(uri){
             uri=uri.replace(':','');
             return (settings.root&&settings.root.length)?(settings.root+'/'+uri):uri
         }
 
-        //  init help, load JSON help and Github docs content 
+        //  init help, load JSON help and Github docs content
         $scope.initHelp=function(){
             rdfHelp.query().$promise.then(function(help){
                 $scope.entity=$scope.getActiveElement($scope.entityName)
                 return gitHubContent.contentIndex();
-            })            
+            })
             .then(function(index) {
                 $scope.docGeneralities = index.docGeneralities;
                 $scope.docHelp = index.docHelp;
@@ -85,10 +85,9 @@
         //
         // setup the scope
         $scope.article=$routeParams.article;
-
         //
         // update page title and get article defined in the path from the github index
-        gitHubContent.contentIndex().then(function(index) {            
+        gitHubContent.contentIndex().then(function(index) {
             if (!$routeParams.article) {
               return;
             }
@@ -101,6 +100,7 @@
             // Set the title of the page according to current article
             var niceTitle = article.title.charAt(0).toUpperCase() + article.title.slice(1);
             niceTitle = niceTitle.replace(/-/g," ");
+            $scope.articleTitle = niceTitle;
 
             if (_.find(index.docGeneralities, {'slug':article.slug})) {
                 $document[0].title = 'RDF Help | ' + niceTitle;
