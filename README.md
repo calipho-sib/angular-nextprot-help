@@ -1,6 +1,12 @@
-# Nextprot Help
+# neXtProt - The knowledge resource on human proteins
 
-Nextprot help is a help module for angular js. It allows you to quickly embed the nexprot help in a declarative way including RDF and API.
+This is a code repository for the SIB - Swiss Institute of Bioinformatics CALIPHO group neXtProt project
+
+See: http://www.nextprot.org/
+
+# neXtProt help
+
+neXtProt help is a help module for angular js. It allows you to quickly embed the neXtProt help in a declarative way including RDF and API.
 
 ## Install it as angular module
 
