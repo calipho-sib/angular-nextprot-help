@@ -93,7 +93,7 @@
 
             var article = gitHubContent.find($routeParams.article);
             if (!article){
-                return $location.path('404');
+                return $location.path('404').replace();
             }
 
             // Set the title of the page according to current article
