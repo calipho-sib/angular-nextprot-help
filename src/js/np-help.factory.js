@@ -79,11 +79,11 @@
     gitHubContent.$inject=['$rootScope','$http','$q','$log','settings'];
     function gitHubContent($rootScope, $http, $q, $log,settings) {
         var markdownRepo = settings.githubApi+settings.githubRepo;
-        var githubToken='access_token='+settings.githubToken
+        var githubToken='access_token='+settings.githubToken;
 
         function buildIndexFromGitTree(tree) {
             var index = {
-              blogPosts: [],
+              newsPosts: [],
               docGeneralities: [],
               docHelp: [],
               pages:[]
@@ -91,43 +91,44 @@
 
             _.each(tree, function(node) {
               if (node.type === 'blob') {
-                // Value of path is in format 'blog/yyyy/mm/dd/title.md'
+                // Value of path is in format 'news/yyyy/mm/dd/Example title.md'
                 var path = node.path.split('/');
                 //
-                // load blogs
-                if (path[0] === 'blog') {
-                  // Strip off the .md extension
+                // load news
+                if (path[0] === 'news') {
+                  // Remove the .md extension (for instance, title = "Example title")
                   var title = path[4].strLeftBack('.');
 
-                  // Use underscore.string to slugify the title
-                  var titleSlug = slugify(title);
+                  // Use '_' to slugify the title (for instance, title = "example_title")
+                  var slugTitle = slugify(title);
+                  var tmpDate = new Date(parseInt(path[1]), parseInt(path[2]) - 1, parseInt(path[3]));
+                  tmpDate = tmpDate.toString();
+                  tmpDate = tmpDate.split(' ');
+                  var formattedDate = tmpDate[1] + ' ' + tmpDate[2] + ', '+ tmpDate[3];
 
-                  index.blogPosts.push({
+                  index.newsPosts.push({
                     // Build a JS date from '2014/07/05'
-                    date: new Date(parseInt(path[1]), parseInt(path[2]) - 1, parseInt(path[3])),
+                    date: formattedDate,
                     title: title,
-                    sha: node.sha,
-                    gitPath: node.path,
-                    titleSlug: titleSlug,
-                    // Use underscore.string slugify function to get a URL safe
-                    // reprensentation of the title
-                    urlPath: settings.root+'/' + path.slice(0, 4).concat(titleSlug).join('/')
+                    slug: slugTitle,
+                    // We use the slugified title to get a safe URL representation of the title
+                    gitPath: '/news/' + slugTitle,
+                    urlPath: '/news/' + slugTitle
                   });
                 }
-                //
                 // load docs
                 // path is in the form docs/01_introduction.md => urlPath root/introduction
                 else if (path[0] === 'generalities') {
                   var titleParts = path[1].split('_');
                   var articleTitle = titleParts[1].strLeftBack('.');
-                  var slug = slugify(articleTitle);
+                  var slugTitle = slugify(articleTitle);
 
                   index.docGeneralities.push({
                     title: articleTitle,
-                    slug: slug,
+                    slug: slugTitle,
                     sequence: titleParts[0],
                     gitPath: node.path,
-                    urlPath: settings.root + '/doc/' + slug
+                    urlPath: settings.root + '/doc/' + slugTitle
                   });
                 }
                 //
@@ -135,32 +136,32 @@
                 // path is in the form help/learn-advanced-search.md => urlPath root/learn-advanced-search
                 else if (path[0] === 'help') {
                     var pageTitle = path[1].strLeftBack('.');
-                    var slug = slugify(pageTitle);
+                    var slugTitle = slugify(pageTitle);
 
                     index.docHelp.push({
                         title: pageTitle,
-                        slug: slug,
+                        slug: slugTitle,
                         gitPath: node.path,
-                        urlPath: settings.root + '/help/' + slug
+                        urlPath: settings.root + '/help/' + slugTitle
                     });
                 }
                 else if(path[0]==='pages'){
                   var pageTitle = path[1].strLeftBack('.');
-                  var slug = slugify(pageTitle);
+                  var slugTitle = slugify(pageTitle);
 
                   index.pages.push({
                     title: pageTitle,
-                    slug: slug,
+                    slug: slugTitle,
                     gitPath: node.path,
-                    urlPath: slug
+                    urlPath: slugTitle
                   });
                 }
               }
             });
 
-            // Sort the blogPosts in reverse chronological order and doc articles
+            // Sort the newsPosts in reverse chronological order and doc articles
             // by the sequence prefix, i.e. 01, 02, etc.
-            index.blogPosts = _.sortBy(index.blogPosts, 'date').reverse();
+            index.newsPosts = _.sortBy(index.newsPosts, 'date').reverse();
             index.docGeneralities = _.sortBy(index.docGeneralities, 'sequence');
             return index;
         }
@@ -202,6 +203,9 @@
               if(article) return article;
               // try to get article in help
               var article = _.find(contentIndex.docHelp, {'slug':slug});
+              if(article) return article;
+              // try to get article in news
+              var article = _.find(contentIndex.newsPosts, {'slug':slug});
               if(article) return article;
               return _.find(contentIndex.pages, {'slug':slug});
             },

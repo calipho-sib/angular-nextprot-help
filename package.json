@@ -1,17 +1,22 @@
 {
-  "name": "nextprot-ui-help",
-  "version": "1.3.0",
+  "name": "angular-nextprot-help",
+  "version": "2.0.1",
   "description": "",
   "main": "dist/np-ui-help.js",
   "scripts": {
     "test": "node ./node_modules/.bin/grunt karma-CI"
   },
   "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calipho-sib/nextprot-ui-help.git"
+  },
   "license": "ISC",
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-bower-concat": "^0.4.0",
     "grunt-bower-task": "^0.4.0",
+    "grunt-bump": "^0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-concat": "~0.3.0",

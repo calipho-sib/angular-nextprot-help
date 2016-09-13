@@ -27,6 +27,7 @@ module.exports = function (grunt) {
         'cssmin'
     ]);
 
+
     // http://fuseinteractive.ca/blog/automating-bower-library-integration-grunt
     grunt.initConfig({
         cmpnt: grunt.file.readJSON('bower.json'),
@@ -48,12 +49,30 @@ module.exports = function (grunt) {
                 'angular':['jquery','bootstrap','showdown']
             }
           }
-        },        
+        },
         clean: {
             working: {
                 src: ['dist/np-help.*', './.temp/views', './.temp/']
             }
         },
+        bump: {
+             options: {
+                 files: ['package.json'],
+                 updateConfigs: [],
+                 commit: true,
+                 commitMessage: 'Release v%VERSION%',
+                 commitFiles: ['package.json'],
+                 createTag: true,
+                 tagName: 'v%VERSION%',
+                 tagMessage: 'Version %VERSION%',
+                 push: true,
+                 pushTo: 'https://github.com/calipho-sib/nextprot-ui-help.git',
+                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+                 globalReplace: false,
+                 prereleaseName: false,
+                 regExp: false
+             }
+         },
         copy: {
             styles: {
                 files: [
@@ -98,7 +117,7 @@ module.exports = function (grunt) {
                 tasks: ['copy','cssmin'],
                 options: {
                     livereload: true
-                }                
+                }
             },
             js: {
                 files: 'src/js/*.js',
@@ -142,4 +161,7 @@ module.exports = function (grunt) {
             }
         }
     });
+
+    grunt.loadNpmTasks('grunt-bump');
+
 };
