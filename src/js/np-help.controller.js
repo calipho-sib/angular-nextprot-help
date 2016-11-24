@@ -93,7 +93,9 @@
             }
 
             var article = gitHubContent.find($routeParams.article);
-            if (!article){
+            if (!article && $location.path() !== '/help/index') {
+                if ($location.path().startsWith("/help"))
+                    return $location.path('/help/index').replace();
                 return $location.path('404').replace();
             }
 
