@@ -93,8 +93,10 @@
             }
 
             var article = gitHubContent.find($routeParams.article);
-            if (!article){
-                return $location.path('404');
+            if (!article && $location.path() !== '/help/index') {
+                if ($location.path().startsWith("/help"))
+                    return $location.path('/help/index').replace();
+                return $location.path('404').replace();
             }
 
             // Set the title of the page according to current article
