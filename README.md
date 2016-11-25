@@ -71,7 +71,7 @@ When code is modified
 ./node_modules/.bin/bower install
 ./node_modules/.bin/grunt
 git add -A
-git commit -m "packaging app"
+git commit -m "packaging app version x.y.z"
 git push origin master
 ./node_modules/.bin/grunt bump
 ```
