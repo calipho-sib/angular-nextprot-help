@@ -68,7 +68,6 @@ When code is modified
 * Type "grunt bump" to release a new version
 
 ```
-npm install
 ./node_modules/.bin/bower install
 ./node_modules/.bin/grunt
 git add -A
