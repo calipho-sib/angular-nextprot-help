@@ -62,10 +62,20 @@ npm install
 
 ## Updates
 When code is modified
-* The bower version must be changed in the bower.json file. 
+* The version must be changed in the package.json file. 
 * The distribution files must be generated using: `./node_modules/.bin/grunt` 
 * Commit and push your changes to git
 * Type "grunt bump" to release a new version
+
+```
+npm install
+./node_modules/.bin/bower install
+./node_modules/.bin/grunt
+git add -A
+git commit -m "packaging app"
+git push origin master
+./node_modules/.bin/grunt bump
+```
 
 ## custom builds
 np-help is based around a main directive which generate a top level controller whose API can be accessed by sub directives
