@@ -177,7 +177,7 @@
               githubToken='access_token='+settings.githubToken
 
               // Go fetch the GitHub tree with references to our Markdown content blobs
-              var apiUrl = markdownRepo + '/git/trees/master?recursive=1';
+              var apiUrl = markdownRepo + 'git/trees/master?recursive=1';
               if((settings.githubToken) && (settings.githubToken != null)){
                 apiUrl += '&'+githubToken;
               }
