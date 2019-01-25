@@ -1,6 +1,6 @@
 {
   "name": "angular-nextprot-help",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "",
   "main": "dist/np-ui-help.js",
   "scripts": {
