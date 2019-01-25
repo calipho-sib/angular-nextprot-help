@@ -1,6 +1,6 @@
 {
   "name": "angular-nextprot-help",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "",
   "main": "dist/np-ui-help.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-bower-concat": "^0.4.0",
-    "grunt-bower-task": "^0.4.0",
+    "grunt-bower-task": "^0.5.0",
     "grunt-bump": "^0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-coffee": "~0.7.0",

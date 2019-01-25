@@ -41,7 +41,7 @@
           function ($compile, $http, $parse, $sce, gitHubContent) {
             //
             // load markdown converter
-            var converter = new Showdown.converter();
+            var converter = new showdown.Converter();
             //
             // insert html in element and perform some UI tweaks
             function loadHtml(element, html){
