@@ -42,6 +42,9 @@
             //
             // load markdown converter
             var converter = new showdown.Converter();
+            converter.setOption('simpleLineBreaks', 'false');
+            converter.setOption('tables', 'true');
+
             //
             // insert html in element and perform some UI tweaks
             function loadHtml(element, html){
