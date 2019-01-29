@@ -366,7 +366,7 @@
             },
             load: function(object) {
               if(!object) return $q.when('');
-              var apiUrl = markdownRepo+'contents'+object.gitPath+'?'+githubToken;
+              var apiUrl = markdownRepo+'contents'+((!object.gitPath.startsWith("/"))?"/":"")+object.gitPath+'?'+githubToken;
               var accept={'Accept':'application/vnd.github.VERSION.raw'}
 
               // if load promise exist return it
