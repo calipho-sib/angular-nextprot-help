@@ -122,6 +122,17 @@
             niceTitle = niceTitle.replace(/-/g," ");
             $scope.articleTitle = niceTitle;
 
+            // Set the sharability of an article
+            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+            let today = new Date();
+            let articleDate = new Date(article.date);
+
+            const utc1 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+            const utc2 = Date.UTC(articleDate.getFullYear(), articleDate.getMonth(), articleDate.getDate());
+
+            let dateDiff = Math.floor((utc1 - utc2) / _MS_PER_DAY);
+            $scope.articleSharable = dateDiff < 30;
+
             if (_.find(index.docGeneralities, {'slug':article.slug})) {
                 $document[0].title = 'RDF Help | ' + niceTitle;
                 $scope.docGeneralities = article;
