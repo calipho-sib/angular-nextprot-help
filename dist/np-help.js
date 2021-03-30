@@ -22,8 +22,8 @@
     //
     // JSON help controller
     //
-    HelpCtrl.$inject=['$scope','$location','rdfHelp','settings','$route','gitHubContent','$log'];
-    function HelpCtrl($scope, $location, rdfHelp, settings, $route, gitHubContent, $log) {
+    HelpCtrl.$inject=['$scope','$location','rdfHelp','settings','$route','gitHubContent','npSettings', '$log'];
+    function HelpCtrl($scope, $location, rdfHelp, settings, $route, gitHubContent, npSettings, $log) {
         //
         // setup the scope
         $scope.entityName=$route.current&&$route.current.params.entity||'';
@@ -33,6 +33,7 @@
         $scope.docGeneralities = [];
         $scope.docHelp = [];
         $scope.newsPosts = [];
+        $scope.npSettings = npSettings;
 
         //
         // update entity documentation on path change
